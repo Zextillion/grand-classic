@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9951711e0848f2a498f7a86bc74295a0
+timeCreated: 1477114223
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - powerUp: {fileID: 1000013692867270, guid: 1edce10c91b086240b52317bdea4353a, type: 2}
+  - deathSound: {fileID: 1000010703992808, guid: ca9d68c5cdfd5bf42826b3464ef92fe6,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
