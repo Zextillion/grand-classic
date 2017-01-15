@@ -18,12 +18,12 @@ public class PlayerManager : MonoBehaviour
     public bool canAct = true;              // Kept separate from other state checks for "animation cancelling"
     [HideInInspector]
     public bool canMove = true;             // Checks if player can move
+    [HideInInspector]
+    public bool canRotate = false;          // Checks if player can rotate (to lock on)
 
     // Checks for cancelling attacks into dashes and vice versa
     [HideInInspector]
     public bool continuousAttacking = false;
-    [HideInInspector]
-    public bool continuousDashing = false;
 
     void Awake()
     {

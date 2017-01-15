@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
         {
             BasicMovement();
         }
+        // Allows dashing continuously by spamming the dash button
         if (PlayerManager.current.isDashing == true)
         {
             Dash();
@@ -48,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // Basic movement code 
         rb.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * speed * 100 * Time.deltaTime;
-
+       
         Dash();
     }
 

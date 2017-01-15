@@ -156,11 +156,10 @@ public class LockOn : MonoBehaviour
             }
         }
 
-        // Checks for a melee attack
-        if (PlayerManager.current.isMeleeAttacking == false)
+        if (PlayerManager.current.canRotate == true)
         {
-            // Checks if shooting a weapon
-            if (Input.GetButton("Fire1") || Input.GetButton("Fire2"))
+            // Checks if attacking
+            if (PlayerManager.current.isShooting == true || PlayerManager.current.isMeleeAttacking == true)
             {
                 if (nearestEnemy != null && isDisabled == false)
                 {
@@ -175,31 +174,17 @@ public class LockOn : MonoBehaviour
                     }
                 }
             }
-            else
-            {   // Otherwise go to the default rotation
-                transform.rotation = defaultRotation;
-
-                if (!facingRight)
-                {
-                    transform.rotation *= Quaternion.Euler(0, 180f, 0);
-                }
-            }
         }
-        else if (PlayerManager.current.isMeleeAttacking && isDisabled == false)
-        {
-            if (nearestEnemy != null)
+        else
+        {   // Otherwise go to the default rotation
+            transform.rotation = defaultRotation;
+
+            if (!facingRight)
             {
-                Vector3 vectorToTarget = nearestEnemy.transform.position - transform.position;
-                float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
-                Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-                transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 999999);
-
-                if (!facingRight)
-                {
-                    transform.rotation *= Quaternion.Euler(180f, 0, 0);
-                }
+                transform.rotation *= Quaternion.Euler(0, 180f, 0);
             }
         }
+
 
         if (nearestEnemy == null || isDisabled == true)
         {

@@ -15,6 +15,8 @@ public class FireTwoPlayer : MonoBehaviour
     private string muzzleFlashName;
 
     [SerializeField]
+    float startUpDelay = 0.0f;              // How long to wait until actually shooting
+    [SerializeField]
     float fireTime = 0.1f;                  // How fast the gun shoots
     [HideInInspector]
     public bool canFire = true;             // Checks if cooldown is over
@@ -33,6 +35,8 @@ public class FireTwoPlayer : MonoBehaviour
     float cancelTime = 0.05f;               // When the player can act again after firing a bullet
     [SerializeField]
     bool allowMovement = true;              // If true, allow the player to move when attacking
+    [SerializeField]
+    float knockbackTime = 0.05f;            // How long the player is knocked back if movement is not allowed
 
     [SerializeField]
     float shakeDuration = 0.1f;             // How long the screen should shake.     
@@ -75,15 +79,8 @@ public class FireTwoPlayer : MonoBehaviour
             if (PlayerManager.current.readyToShoot
                 && PlayerManager.current.isDashing == false)
             {   // If the gun is not on cooldown
-                LockOn.current.ChangeRotation();
-                Fire();
+                StartUpDelay();
                 isShooting = true;
-
-                // How fast the gun can fire
-                PlayerManager.current.readyToShoot = false;
-                hasShot = true;
-                Invoke("ResetFireTime", fireTime);
-                Invoke("CanAct", cancelTime);
             }
         }
     }
@@ -116,6 +113,35 @@ public class FireTwoPlayer : MonoBehaviour
     }
 
     #region Fire
+    void StartUpDelay()
+    {
+        BlockMovement();
+        DisableActing();
+        FaceEnemy();
+        Invoke("Fire", startUpDelay);
+    }
+
+    void BlockMovement()
+    {
+        if (allowMovement == false)
+        {
+            PlayerMovement.current.rb.velocity = Vector2.zero;
+            PlayerManager.current.canMove = false;
+        }
+    }
+
+    void DisableActing()
+    {
+        PlayerManager.current.readyToShoot = false;
+        hasShot = true;
+    }
+
+    void FaceEnemy()
+    {
+        PlayerManager.current.canRotate = true;
+        LockOn.current.ChangeRotation();
+    }
+
     // Main fire function
     void Fire()
     {
@@ -133,9 +159,9 @@ public class FireTwoPlayer : MonoBehaviour
             obj.SetActive(true);
         }
 
-        AllowMovement();
-
         PlayAudio();
+
+        Cooldown();
 
         MuzzleFlash();
 
@@ -146,12 +172,11 @@ public class FireTwoPlayer : MonoBehaviour
         Screenshake();
     }
 
-    void AllowMovement()
+    // How fast the gun can fire
+    void Cooldown()
     {
-        if (allowMovement == false)
-        {
-            PlayerManager.current.canMove = false;
-        }
+        Invoke("ResetFireTime", fireTime);
+        Invoke("CanAct", cancelTime);
     }
 
     void PlayAudio()
@@ -184,6 +209,7 @@ public class FireTwoPlayer : MonoBehaviour
     void Knockback()
     {
         Rigidbody2D rb = PlayerManager.current.GetComponent<Rigidbody2D>();
+        Invoke("EndKnockback", knockbackTime);
         rb.AddForce(transform.right * knockbackAmount * 1000 * -1);   
     }
 
@@ -205,9 +231,16 @@ public class FireTwoPlayer : MonoBehaviour
         PlayerManager.current.readyToShoot = true;
     }
 
+    void EndKnockback()
+    {
+        Rigidbody2D rb = PlayerManager.current.GetComponent<Rigidbody2D>();
+        rb.velocity = Vector2.zero;
+    }
+
     // Allows the player to do other actions again
     void CanAct()
-    {
+    { 
+        PlayerManager.current.canRotate = false;
         PlayerManager.current.canAct = true;
         PlayerManager.current.canMove = true;
         isShooting = false;

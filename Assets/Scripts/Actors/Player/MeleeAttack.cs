@@ -60,6 +60,8 @@ public class MeleeAttack : MonoBehaviour
 
         PlayerManager.current.isMeleeAttacking = true;
 
+        FaceEnemy();
+
         // Lunge
         lungeCounter = 0.0f;
 
@@ -73,8 +75,13 @@ public class MeleeAttack : MonoBehaviour
         Invoke("DisableSprite", cancelTime);
         Invoke("CanAct", cancelTime);
 
-        // Screenshake
         Screenshake();
+    }
+
+    void FaceEnemy()
+    {
+        PlayerManager.current.canRotate = true;
+        LockOn.current.ChangeRotation();
     }
 
     void Screenshake()
@@ -111,6 +118,7 @@ public class MeleeAttack : MonoBehaviour
         PlayerManager.current.readyToShoot = true;
         PlayerManager.current.canAct = true;
         PlayerManager.current.canMove = true;
+        PlayerManager.current.canRotate = false;
         successfulHit = false;
     }
 
@@ -123,20 +131,9 @@ public class MeleeAttack : MonoBehaviour
             PlayerMovement.current.rb.velocity = transform.right * lungeSpeed * 100 * Time.deltaTime;
             lungeCounter += Time.deltaTime;
         }
-        else if (lungeCounter >= lungeTimer)
+        else if (lungeCounter >= lungeTimer && PlayerManager.current.canAct == false)
         {   // Player is done lunging, but can not act
-            PlayerMovement.current.rb.velocity = new Vector3(0, 0, 0);
-        }
-        else if (PlayerManager.current.canAct == true)
-        {   // Player can act now
-            if (Input.GetButtonDown("Dash"))
-            {
-                PlayerManager.current.isMeleeAttacking = false;
-            }
-            if (PlayerManager.current.canAct == true && PlayerManager.current.readyToShoot == true)
-            {
-                PlayerMovement.current.BasicMovement();
-            }
+             PlayerMovement.current.rb.velocity = new Vector3(0, 0, 0);
         }
     }
 }

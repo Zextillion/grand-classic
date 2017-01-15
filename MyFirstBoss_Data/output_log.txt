@@ -7,163 +7,139 @@ Direct3D:
     VRAM:     2013 MB
     Driver:   20.19.15.4312
 Begin MonoManager ReloadAssembly
-Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
-Loading C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
-Loading C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.033 seconds
-Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\System.Core.dll (this message is harmless)
-Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\My 2D Shooter\MyFirstBoss_Data\Managed\System.dll (this message is harmless)
+Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
+Loading C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
+- Completed reload, in  0.035 seconds
+Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\Stephen Ednave\Documents\Game Dev\grand-classic\MyFirstBoss_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 2.001383 ms
-NullReferenceException: Object reference not set to an instance of an object
-  at WeaponsGabi.ChangeRotation () [0x00000] in <filename unknown>:0 
-  at WeaponsGabi.Update () [0x00000] in <filename unknown>:0 
+UnloadTime: 84.270256 ms
+HP: 95.23077
  
-(Filename:  Line: -1)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+Stage one
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+HP: 90.46154
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+Stage one
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+HP: 81.84615
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+Stage one
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+HP: 78.15385
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+Stage one
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+HP: 74.76923
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+Cancelinvoke1
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+Ultimate one!
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+HP: 67.38461
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+Stage two
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+HP: 65.84615
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-Can not play a disabled audio source
+Stage two
  
-(Filename:  Line: 437)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-you died LMFAO. Press 'q' to restart the level
+HP: 65.53846
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Stage two
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+HP: 65.53846
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Stage two
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+HP: 57.84615
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Stage two
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+HP: 53.53846
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Stage two
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+HP: 50.76923
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Stage two
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+HP: 49.53846
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Cancelinvoke2
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 6.697089 ms
+UnloadTime: 3.346964 ms
 
-Unloading 2 unused Assets to reduce memory usage. Loaded Objects now: 1979.
-Total: 1.133827 ms (FindLiveObjects: 0.679111 ms CreateObjectMapping: 0.106271 ms MarkObjects: 0.330666 ms  DeleteObjects: 0.016987 ms)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at WeaponsGabi.ChangeRotation () [0x00000] in <filename unknown>:0 
-  at WeaponsGabi.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-Can not play a disabled audio source
- 
-(Filename:  Line: 437)
-
-you died LMFAO. Press 'q' to restart the level
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+Unloading 2 unused Assets to reduce memory usage. Loaded Objects now: 1697.
+Total: 232.323639 ms (FindLiveObjects: 0.734815 ms CreateObjectMapping: 0.066765 ms MarkObjects: 231.494415 ms  DeleteObjects: 0.027259 ms)
 
 Setting up 1 worker threads for Enlighten.
   Thread -> id: 3428 -> priority: 1 

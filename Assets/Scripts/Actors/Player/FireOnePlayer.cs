@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class FireOnePlayer : MonoBehaviour
 {
     public static FireOnePlayer current;
-
     [SerializeField]
     GameObject bulletPrefab;                // The bullet prefab to fire
     private bool willGrow = true;           // Set true if you want to expand the pool if there are too many instances of the object
@@ -15,9 +14,11 @@ public class FireOnePlayer : MonoBehaviour
     private string muzzleFlashName;
 
     [SerializeField]
+    float startUpDelay = 0.0f;              // How long to wait until actually shooting
+    [SerializeField]
     float fireTime = 0.1f;                  // How fast the gun shoots
     [HideInInspector]
-    public bool canFire = true;             // Cancels other input
+    public bool canFire = true;             // Checks if cooldown is over
     [HideInInspector]
     public bool isShooting = false;         // Cancels other input
 
@@ -33,6 +34,8 @@ public class FireOnePlayer : MonoBehaviour
     float cancelTime = 0.05f;               // When the player can act again after firing a bullet
     [SerializeField]
     bool allowMovement = true;              // If true, allow the player to move when attacking
+    [SerializeField]
+    float knockbackTime = 0.05f;            // How long the player is knocked back if movement is not allowed
 
     [SerializeField]
     float shakeDuration = 0.1f;             // How long the screen should shake.     
@@ -75,31 +78,24 @@ public class FireOnePlayer : MonoBehaviour
             if (PlayerManager.current.readyToShoot
                 && PlayerManager.current.isDashing == false)
             {   // If the gun is not on cooldown
-                LockOn.current.ChangeRotation();
-                Fire();
+                StartUpDelay();
                 isShooting = true;
-
-                // How fast the gun can fire
-                PlayerManager.current.readyToShoot = false;
-                hasShot = true;
-                Invoke("ResetFireTime", fireTime);
-                Invoke("CanAct", cancelTime);
             }
         }
     }
 
     void CheckForOtherFire()
     {
-        if (Input.GetButton("Fire2") && FireTwoPlayer.current.isShooting == true)
+        if (FireOnePlayer.current.isShooting == true)
         {
             if (Input.GetButtonDown("Fire1"))
             {
-                FireTwoPlayer.current.canFire = false;
+                FireOnePlayer.current.canFire = false;
             }
         }
         else if (Input.GetButtonDown("Fire2"))
         {
-            FireTwoPlayer.current.canFire = true;
+            FireOnePlayer.current.canFire = true;
         }
     }
 
@@ -116,6 +112,35 @@ public class FireOnePlayer : MonoBehaviour
     }
 
     #region Fire
+    void StartUpDelay()
+    {
+        BlockMovement();
+        DisableActing();
+        FaceEnemy();
+        Invoke("Fire", startUpDelay);
+    }
+
+    void BlockMovement()
+    {
+        if (allowMovement == false)
+        {
+            PlayerMovement.current.rb.velocity = Vector2.zero;
+            PlayerManager.current.canMove = false;
+        }
+    }
+
+    void DisableActing()
+    {
+        PlayerManager.current.readyToShoot = false;
+        hasShot = true;
+    }
+
+    void FaceEnemy()
+    {
+        PlayerManager.current.canRotate = true;
+        LockOn.current.ChangeRotation();
+    }
+
     // Main fire function
     void Fire()
     {
@@ -133,9 +158,9 @@ public class FireOnePlayer : MonoBehaviour
             obj.SetActive(true);
         }
 
-        AllowMovement();
-
         PlayAudio();
+
+        Cooldown();
 
         MuzzleFlash();
 
@@ -146,12 +171,11 @@ public class FireOnePlayer : MonoBehaviour
         Screenshake();
     }
 
-    void AllowMovement()
+    // How fast the gun can fire
+    void Cooldown()
     {
-        if (allowMovement == false)
-        {
-            PlayerManager.current.canMove = false;
-        }
+        Invoke("ResetFireTime", fireTime);
+        Invoke("CanAct", cancelTime);
     }
 
     void PlayAudio()
@@ -184,6 +208,7 @@ public class FireOnePlayer : MonoBehaviour
     void Knockback()
     {
         Rigidbody2D rb = PlayerManager.current.GetComponent<Rigidbody2D>();
+        Invoke("EndKnockback", knockbackTime);
         rb.AddForce(transform.right * knockbackAmount * 1000 * -1);
     }
 
@@ -205,9 +230,16 @@ public class FireOnePlayer : MonoBehaviour
         PlayerManager.current.readyToShoot = true;
     }
 
+    void EndKnockback()
+    {
+        Rigidbody2D rb = PlayerManager.current.GetComponent<Rigidbody2D>();
+        rb.velocity = Vector2.zero;
+    }
+
     // Allows the player to do other actions again
     void CanAct()
     {
+        PlayerManager.current.canRotate = false;
         PlayerManager.current.canAct = true;
         PlayerManager.current.canMove = true;
         isShooting = false;

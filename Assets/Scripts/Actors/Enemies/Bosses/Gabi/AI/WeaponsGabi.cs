@@ -83,7 +83,7 @@ public class WeaponsGabi : MonoBehaviour
     {
         float healthPercent;
         healthPercent = bossHealth.CalculateHealthPercent();
-        Debug.Log(healthPercent);
+        Debug.Log("HP: " + healthPercent);
         RandomTime();
         // First ultimate at 75% hp
         if (healthPercent <= 75.0f && ultimateAttacksCheck[0] == false)
@@ -107,22 +107,26 @@ public class WeaponsGabi : MonoBehaviour
             nextAttack = ultimateAttacks[2];
             Invoke("UltimateThree", timeBetweenAttacks + randomTime);
         }
+        else if (healthPercent <= 0.0f)
+        {
+            CancelInvoke();
+        }
         else
         {
             if (ultimateAttacksCheck[2] == true)
             {
                 Debug.Log("Stage four");
-
+                StageOne();
             }
             else if (ultimateAttacksCheck[1] == true)
             {
-
+                StageOne();
                 Debug.Log("Stage three");
             }
             else if (ultimateAttacksCheck[0] == true)
             {
                 Debug.Log("Stage two");
-
+                StageOne();
             }
             else
             {
