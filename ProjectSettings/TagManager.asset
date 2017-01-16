@@ -9,6 +9,7 @@ TagManager:
   - Bullets
   - GameManager
   - ObjectPooler
+  - Drone
   layers:
   - Default
   - TransparentFX

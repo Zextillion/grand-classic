@@ -21,6 +21,9 @@ public class PlayerManager : MonoBehaviour
     [HideInInspector]
     public bool canRotate = false;          // Checks if player can rotate (to lock on)
 
+    [HideInInspector]
+    public Animator bodyAnimator;           // Animator for the main sprite
+
     // Checks for cancelling attacks into dashes and vice versa
     [HideInInspector]
     public bool continuousAttacking = false;
@@ -28,5 +31,6 @@ public class PlayerManager : MonoBehaviour
     void Awake()
     {
         current = this;
+        bodyAnimator = transform.Find("Sprite").GetComponent<Animator>();
     }
 }

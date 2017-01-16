@@ -13,6 +13,10 @@ public class PlayerDamageScript : MonoBehaviour
             if (hit.gameObject.GetComponent<Health>() != null)
             {
                 hit.gameObject.GetComponent<Health>().SendMessage("ApplyDamage", damage, SendMessageOptions.DontRequireReceiver);
+                if (hit.tag == "Enemies")
+                {
+                    TimeSlow.current.TimeSlowdown(0.0008f);
+                }
             }
         }
     }

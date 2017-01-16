@@ -11,7 +11,8 @@ public class LockOn : MonoBehaviour
 
     private int enemyList;
     private Quaternion defaultRotation;
-    private bool facingRight = true;
+    [HideInInspector]
+    public bool facingRight = true;
     [HideInInspector]
     public GameObject nearestEnemy = null;
     private GameObject previousEnemy = null;
@@ -36,6 +37,7 @@ public class LockOn : MonoBehaviour
     {
         GetLockOn();
         AdjustLockOnReticle();
+        CheckFacingRight();
         ChangeRotation();
         CheckForDeath();
     }
@@ -143,19 +145,6 @@ public class LockOn : MonoBehaviour
     // If doing an action, change the rotation of the actor
     public void ChangeRotation()
     {
-        // Checks if player is to the right of an enemy
-        if (nearestEnemy != null)
-        {
-            if (transform.position.x > nearestEnemy.transform.position.x)
-            {
-                facingRight = false;
-            }
-            else
-            {
-                facingRight = true;
-            }
-        }
-
         if (PlayerManager.current.canRotate == true)
         {
             // Checks if attacking
@@ -189,6 +178,23 @@ public class LockOn : MonoBehaviour
         if (nearestEnemy == null || isDisabled == true)
         {
             transform.rotation = defaultRotation;
+        }
+    }
+
+    public void CheckFacingRight()
+    {
+        // Checks if player is to the right of an enemy
+        if (nearestEnemy != null)
+        {
+            if (transform.position.x > nearestEnemy.transform.position.x)
+            {
+                facingRight = false;
+            }
+            else
+            {
+                facingRight = true;
+            }
+            PlayerMovement.current.MoveAnimation();
         }
     }
 

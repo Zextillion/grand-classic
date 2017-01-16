@@ -21,6 +21,13 @@ public class FollowObject : MonoBehaviour
     private bool xBoundLeft = false;
     private Vector3 boundPosition;
 
+    private Rigidbody2D rb;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
     // Use this for initialization
     private void Start()
     {

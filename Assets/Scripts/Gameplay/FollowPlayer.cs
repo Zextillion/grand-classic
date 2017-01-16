@@ -16,14 +16,10 @@ namespace UnityStandardAssets._2D
         private Vector3 m_CurrentVelocity;
         private Vector3 m_LookAheadPos;
 
-        void Awake()
-        {
-            target = PlayerManager.current.transform;
-        }
-
         // Use this for initialization
         private void Start()
         {
+            target = PlayerManager.current.transform;
             m_LastTargetPosition = target.position;
             m_OffsetZ = (transform.position - target.position).z;
         }

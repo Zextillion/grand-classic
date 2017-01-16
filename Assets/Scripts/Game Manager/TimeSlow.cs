@@ -3,6 +3,13 @@ using System.Collections;
 
 public class TimeSlow : MonoBehaviour
 {
+    public static TimeSlow current;
+
+    void Awake()
+    {
+        current = this;
+    }
+
     public void TimeSlowdown(float pauseDelay)
     {
         StartCoroutine("Pause", pauseDelay);

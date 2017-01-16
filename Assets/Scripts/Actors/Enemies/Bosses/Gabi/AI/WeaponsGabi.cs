@@ -81,10 +81,17 @@ public class WeaponsGabi : MonoBehaviour
     // Changes the attack
     void ChangeAttack()
     {
+        RandomTime();
+
+        UltimateCheck();
+    }
+
+    // Checks if an ultimate is ready, if not, do a regular attack
+    void UltimateCheck()
+    {
         float healthPercent;
         healthPercent = bossHealth.CalculateHealthPercent();
         Debug.Log("HP: " + healthPercent);
-        RandomTime();
         // First ultimate at 75% hp
         if (healthPercent <= 75.0f && ultimateAttacksCheck[0] == false)
         {
@@ -175,15 +182,23 @@ public class WeaponsGabi : MonoBehaviour
     // Attacks if no ultimates have played
     void StageOne()
     {
-        if (numAttacks < 5)
+        int i = 0;
+        foreach(GameObject obj in GameObject.FindGameObjectsWithTag("Drone"))
+        {
+            if (obj.activeInHierarchy == true)
+            {
+                i++;
+            }   
+        }
+        if (numAttacks < 4 + (i * 2))
         {
             int randomValue;
             randomValue = (int)Mathf.Floor(Random.value * 100);
-            if (randomValue >= 0 && randomValue < 50)
-            {   // 50% chance
+            if (randomValue >= 0 && randomValue < 60)
+            {   // 60% chance
                 BulletWall();               // Bullet wall attack
             }
-            else if (randomValue >= 50 && randomValue < 100)
+            else if (randomValue >= 60 && randomValue < 100)
             {
                 CircleAttack();             // Circle attack
             }
@@ -204,11 +219,11 @@ public class WeaponsGabi : MonoBehaviour
     {
         int randomValue;
         randomValue = (int)Mathf.Floor(Random.value * 100);
-        if (randomValue >= 0 && randomValue < 50)
-        {   // 50% chance
+        if (randomValue >= 0 && randomValue < 60)
+        {   // 60% chance
             nextAttack = weapons[0];    // slow bullet wall
         }
-        else if (randomValue >= 50 && randomValue < 100)
+        else if (randomValue >= 60 && randomValue < 100)
         {
             nextAttack = weapons[2];    // Faster bullet wall
         }
@@ -231,7 +246,7 @@ public class WeaponsGabi : MonoBehaviour
         {
             if (rotateCircle == true)
             {
-                ChangeAttack();
+                nextAttack = weapons[1];    // Circular attack
             }
             else
             {

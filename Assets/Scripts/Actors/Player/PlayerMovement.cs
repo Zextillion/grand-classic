@@ -20,7 +20,9 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector]
     public Rigidbody2D rb;
 
-    private Vector2 lungeDirection;             // Direction of the lunge
+    private Vector2 lungeDirection;          
+
+    private Vector3 previousPosition;
 
     // Initializes initial speed
     void Awake()
@@ -28,6 +30,11 @@ public class PlayerMovement : MonoBehaviour
         current = this;
         initialSpeed = speed;
         rb = GetComponent<Rigidbody2D>();
+    }
+
+    void Start()
+    {
+        previousPosition = transform.position;
     }
 
     void FixedUpdate()
@@ -47,10 +54,39 @@ public class PlayerMovement : MonoBehaviour
     // Basic 2D movement
     public void BasicMovement()
     {
+        LockOn.current.CheckFacingRight();
+        MoveAnimation();
         // Basic movement code 
         rb.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * speed * 100 * Time.deltaTime;
+        previousPosition = transform.position;
        
         Dash();
+    }
+
+    public void MoveAnimation()
+    {
+        if (LockOn.current.facingRight == true)
+        {
+            if (previousPosition.x > transform.position.x)
+            {
+                PlayerManager.current.bodyAnimator.SetBool("movingBack", true);
+            }
+            else 
+            {
+                PlayerManager.current.bodyAnimator.SetBool("movingBack", false);
+            }
+        }
+        else
+        {
+            if (previousPosition.x < transform.position.x)
+            {
+                PlayerManager.current.bodyAnimator.SetBool("movingBack", true);
+            }
+            else
+            {
+                PlayerManager.current.bodyAnimator.SetBool("movingBack", false);
+            }
+        }
     }
 
     void Dash()
