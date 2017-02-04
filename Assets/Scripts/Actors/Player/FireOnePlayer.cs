@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class FireOnePlayer : MonoBehaviour
 {
-    public static FireOnePlayer current;
     [SerializeField]
     GameObject bulletPrefab;                // The bullet prefab to fire
     private bool willGrow = true;           // Set true if you want to expand the pool if there are too many instances of the object
@@ -17,8 +16,6 @@ public class FireOnePlayer : MonoBehaviour
     float startUpDelay = 0.0f;              // How long to wait until actually shooting
     [SerializeField]
     float fireTime = 0.1f;                  // How fast the gun shoots
-    [HideInInspector]
-    public bool canFire = true;             // Checks if cooldown is over
     [HideInInspector]
     public bool isShooting = false;         // Cancels other input
 
@@ -44,31 +41,36 @@ public class FireOnePlayer : MonoBehaviour
     [SerializeField]
     float decreaseFactor = 1.0f;            // How much the shake should decrease
 
+    [SerializeField]
+    string fireButton = "Fire1";
+
+    private Rigidbody2D rb;
+
     void Awake()
     {
-        current = this;
         bulletName = bulletPrefab.transform.name;
         muzzleFlashName = muzzleFlash.transform.name;
+    }
+
+    void Start()
+    {
+        rb = PlayerManager.current.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckForOtherFire();
         CheckForLift();
-        if (canFire == true)
+        if (singleShot == false || (singleShot == true && hasShot == false))
         {
-            if (singleShot == false || (singleShot == true && hasShot == false))
-            {
-                CheckForInput();
-            }
+            CheckForInput();
         }
         CheckForMelee();
     }
 
     void CheckForInput()
     {
-        if (Input.GetButton("Fire1")
+        if (Input.GetButton(fireButton)
         && PlayerManager.current.canAct == true
         && PlayerManager.current.isMeleeAttacking == false
         && PlayerMovement.current.cancelledShooting == false)
@@ -84,30 +86,22 @@ public class FireOnePlayer : MonoBehaviour
         }
     }
 
-    void CheckForOtherFire()
-    {
-        if (FireOnePlayer.current.isShooting == true)
-        {
-            if (Input.GetButtonDown("Fire1"))
-            {
-                FireOnePlayer.current.canFire = false;
-            }
-        }
-        else if (Input.GetButtonDown("Fire2"))
-        {
-            FireOnePlayer.current.canFire = true;
-        }
-    }
-
     // Checks if player no longer pressing input
     void CheckForLift()
     {
-        if (Input.GetButtonUp("Fire1"))
+        if (Input.GetButtonUp(fireButton))
         {
             // Reinitializes the spread
             transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 0);
             PlayerManager.current.isShooting = false;
             hasShot = false;
+
+            // If cancelled shooting, reenable the ability to shoot
+            if (PlayerMovement.current.cancelledShooting == true)
+            {
+                PlayerManager.current.readyToShoot = true;
+                PlayerMovement.current.cancelledShooting = false;
+            }
         }
     }
 
@@ -207,8 +201,6 @@ public class FireOnePlayer : MonoBehaviour
 
     void Knockback()
     {
-        Rigidbody2D rb = PlayerManager.current.GetComponent<Rigidbody2D>();
-        Invoke("EndKnockback", knockbackTime);
         rb.AddForce(transform.right * knockbackAmount * 1000 * -1);
     }
 
@@ -228,12 +220,6 @@ public class FireOnePlayer : MonoBehaviour
     void ResetFireTime()
     {
         PlayerManager.current.readyToShoot = true;
-    }
-
-    void EndKnockback()
-    {
-        Rigidbody2D rb = PlayerManager.current.GetComponent<Rigidbody2D>();
-        rb.velocity = Vector2.zero;
     }
 
     // Allows the player to do other actions again

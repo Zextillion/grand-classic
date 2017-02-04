@@ -20,9 +20,12 @@ public class PlayerManager : MonoBehaviour
     public bool canMove = true;             // Checks if player can move
     [HideInInspector]
     public bool canRotate = false;          // Checks if player can rotate (to lock on)
-
     [HideInInspector]
     public Animator bodyAnimator;           // Animator for the main sprite
+
+    public float speed = 1.0f;
+    public float dashSpeed = 2.0f;
+    public float lungeTime = 0.1f;
 
     // Checks for cancelling attacks into dashes and vice versa
     [HideInInspector]

@@ -7,6 +7,8 @@ public class EnemyLockOn : MonoBehaviour
     [SerializeField]
     GameObject lockOnReticle;               // The reticle used for determining if there is a lock on
     private Animator reticleAnimator;       // The animator for the reticle
+    [SerializeField]
+    float rotateSpeed= 99999.0f;
 
     [HideInInspector]
     public GameObject nearestEnemy = null;
@@ -15,6 +17,7 @@ public class EnemyLockOn : MonoBehaviour
     public Quaternion defaultRotation;
     [HideInInspector]
     public bool facingRight = true;
+    private bool previouslyRight = true;
 
     // Use this for initialization
     void Awake()
@@ -105,12 +108,14 @@ public class EnemyLockOn : MonoBehaviour
             Vector3 vectorToTarget = nearestEnemy.transform.position - transform.position;
             float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
             Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-            transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 999999);
+            transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * rotateSpeed);
+            transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z);
 
-            if (!facingRight)
+            if (facingRight != previouslyRight)
             {
                 transform.rotation *= Quaternion.Euler(180f, 0, 0);
             }
+            previouslyRight = facingRight;
         }
     }
 

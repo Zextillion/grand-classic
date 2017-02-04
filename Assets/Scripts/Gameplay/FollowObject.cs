@@ -15,18 +15,7 @@ public class FollowObject : MonoBehaviour
     private Vector3 m_CurrentVelocity;
     private Vector3 m_LookAheadPos;
 
-    private bool yBoundTop = false;
-    private bool yBoundBottom = false;
-    private bool xBoundRight = false;
-    private bool xBoundLeft = false;
     private Vector3 boundPosition;
-
-    private Rigidbody2D rb;
-
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
 
     // Use this for initialization
     private void Start()

@@ -7,62 +7,64 @@ public class PlayerMovement : MonoBehaviour
 {
     public static PlayerMovement current;
 
-    public float speed = 10.0f;
-    [HideInInspector]
-    public float initialSpeed;
-    [SerializeField]
+    float speed = 10.0f;
+    float initialSpeed;
     float dashSpeed = 30.0f;
+    float lungeTime = 0.1f;                     // Initial dash timer
+    private Vector2 lungeDirection;
+    private Vector3 previousPosition;
+
+    [HideInInspector]
+    public Rigidbody2D rb;
+    
+    private GameObject hitbox;
+
     [HideInInspector]
     public bool cancelledShooting = false;      // Check for if player was shooting at the time
 
-    [SerializeField]
-    float lungeTime = 0.1f;                     // Initial dash timer
-    [HideInInspector]
-    public Rigidbody2D rb;
-
-    private Vector2 lungeDirection;          
-
-    private Vector3 previousPosition;
-
-    // Initializes initial speed
     void Awake()
     {
         current = this;
-        initialSpeed = speed;
         rb = GetComponent<Rigidbody2D>();
+        hitbox = GameObject.Find("Hitbox");
     }
 
     void Start()
     {
+        speed = PlayerManager.current.speed;
+        initialSpeed = speed;
+        dashSpeed = PlayerManager.current.dashSpeed;
+        lungeTime = PlayerManager.current.lungeTime;
         previousPosition = transform.position;
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        if (PlayerManager.current.isMeleeAttacking == false && PlayerManager.current.canMove == true)
+        if (PlayerManager.current.isMeleeAttacking == false && PlayerManager.current.isDashing == false && PlayerManager.current.canMove == true)
         {
             BasicMovement();
         }
-        // Allows dashing continuously by spamming the dash button
-        if (PlayerManager.current.isDashing == true)
+
+        if (Input.GetButtonDown("Dash") && PlayerManager.current.canAct)
         {
             Dash();
+        }
+
+        if (PlayerManager.current.isDashing == true)
+        {
             Lunge();
         }
     }
-
+    
     // Basic 2D movement
     public void BasicMovement()
     {
-        LockOn.current.CheckFacingRight();
+        rb.velocity = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * speed * 100 * Time.deltaTime;
         MoveAnimation();
-        // Basic movement code 
-        rb.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * speed * 100 * Time.deltaTime;
         previousPosition = transform.position;
-       
-        Dash();
     }
 
+    // Turns player around depending on direction travelling relative to 
     public void MoveAnimation()
     {
         if (LockOn.current.facingRight == true)
@@ -91,22 +93,43 @@ public class PlayerMovement : MonoBehaviour
 
     void Dash()
     {
-        // Input for dashing
-        if (Input.GetButtonDown("Dash") && PlayerManager.current.canAct)
+        CancelInvoke();
+        CancelShooting();
+        lungeDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if (lungeDirection == Vector2.zero)
         {
-            lungeDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            CancelShooting();
-            Lunge();
-            CancelInvoke();
+            lungeDirection = transform.right;
         }
+        hitbox.layer = LayerMask.NameToLayer("BulletPhaser");
+        PlayerManager.current.isDashing = true;
+        rb.velocity = lungeDirection * dashSpeed;
+        Lunge();
     }
 
     void Lunge()
     {
         Invoke("EndLunge", lungeTime);
-        PlayerManager.current.isDashing = true;
-        PlayerManager.current.canMove = false;
-        rb.velocity = lungeDirection * dashSpeed;
+        if (Input.GetAxisRaw("Horizontal") != lungeDirection.x)
+        {
+            rb.AddForce(new Vector2(Input.GetAxisRaw("Horizontal"), 0) * dashSpeed * 12, ForceMode2D.Force);
+        }
+        if (Input.GetAxisRaw("Vertical") != lungeDirection.y)
+        {
+            rb.AddForce(new Vector2(0, Input.GetAxisRaw("Vertical")) * dashSpeed * 12, ForceMode2D.Force);
+        }
+    }
+
+    void EndLunge()
+    {
+        CancelInvoke();
+        PlayerManager.current.isDashing = false;
+
+        Invoke("AllowHit", 0.2f);
+    }
+
+    void AllowHit()
+    {
+        hitbox.layer = LayerMask.NameToLayer("Player");
     }
 
     void CancelShooting()
@@ -116,21 +139,6 @@ public class PlayerMovement : MonoBehaviour
             PlayerManager.current.readyToShoot = false;
             PlayerManager.current.isShooting = false;
             cancelledShooting = true;
-        }
-    }
-
-    void EndLunge()
-    {
-        CancelInvoke();
-        speed = initialSpeed;
-        PlayerManager.current.isDashing = false;
-        PlayerManager.current.canMove = true;
-
-        // If cancelled shooting, reenable the ability to shoot
-        if (cancelledShooting == true)
-        {
-            PlayerManager.current.readyToShoot = true;
-            cancelledShooting = false;
         }
     }
 }

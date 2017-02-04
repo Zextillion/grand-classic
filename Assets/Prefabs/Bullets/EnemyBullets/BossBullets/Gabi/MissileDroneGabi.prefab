@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 4000013021529300}
   - component: {fileID: 61000013016335644}
   - component: {fileID: 50000013937646332}
-  - component: {fileID: 114705896058455592}
+  - component: {fileID: 114974031777413382}
   m_Layer: 10
   m_Name: Hitbox
   m_TagString: Bullets
@@ -149,20 +149,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 15
---- !u!114 &114705896058455592
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013378304392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b009e9d0b402904d977a20845243a65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
-  destroyEffect: {fileID: 1441973611151810, guid: 044b06e2fdf49c041b880f20a9cf7064,
-    type: 2}
 --- !u!114 &114941946407282846
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -175,6 +161,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeToRecycle: 10
+--- !u!114 &114974031777413382
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013378304392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4781543b5a6875944b5486d2e7b2f93a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 0
+  destroyEffect: {fileID: 1441973611151810, guid: 044b06e2fdf49c041b880f20a9cf7064,
+    type: 2}
 --- !u!212 &212000013533523564
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -70,11 +70,11 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4685119680713146}
+  - component: {fileID: 114128909689307448}
   - component: {fileID: 114048312103610310}
   - component: {fileID: 50201407426442680}
   - component: {fileID: 61963790389726714}
   - component: {fileID: 114671102079280070}
-  - component: {fileID: 114128909689307448}
   - component: {fileID: 114049951278243972}
   m_Layer: 17
   m_Name: Renne
@@ -191,6 +191,7 @@ GameObject:
   - component: {fileID: 114372750018957018}
   - component: {fileID: 212347655669403758}
   - component: {fileID: 114692466567360946}
+  - component: {fileID: 114530122107043120}
   m_Layer: 8
   m_Name: Hitbox
   m_TagString: Player
@@ -210,7 +211,7 @@ Transform:
   m_Children:
   - {fileID: 4447517902177660}
   m_Father: {fileID: 4685119680713146}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4169060927916634
 Transform:
@@ -225,7 +226,7 @@ Transform:
   - {fileID: 4620216165596600}
   - {fileID: 4897998543267874}
   m_Father: {fileID: 4685119680713146}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4327223727363200
 Transform:
@@ -239,7 +240,7 @@ Transform:
   m_Children:
   - {fileID: 4618656822330036}
   m_Father: {fileID: 4685119680713146}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4447517902177660
 Transform:
@@ -265,7 +266,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4685119680713146}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4618656822330036
 Transform:
@@ -303,12 +304,12 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 4967718177178454}
   - {fileID: 4812442441163672}
   - {fileID: 4571828040339364}
   - {fileID: 4327223727363200}
   - {fileID: 4091767205663246}
   - {fileID: 4169060927916634}
-  - {fileID: 4967718177178454}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -323,7 +324,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4685119680713146}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4897998543267874
 Transform:
@@ -349,7 +350,7 @@ Transform:
   m_LocalScale: {x: 0.2, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4685119680713146}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50201407426442680
 Rigidbody2D:
@@ -382,9 +383,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 1.98, y: 0}
+  m_Offset: {x: 2.2101085, y: 0.032874107}
   serializedVersion: 2
-  m_Size: {x: 5, y: 3.51}
+  m_Size: {x: 6.1176705, y: 4.364689}
 --- !u!61 &61454185504784186
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -649,8 +650,12 @@ MonoBehaviour:
   isShooting: 0
   canAct: 1
   canMove: 1
+  canRotate: 0
+  bodyAnimator: {fileID: 0}
+  speed: 6
+  dashSpeed: 60
+  lungeTime: 0.12
   continuousAttacking: 0
-  continuousDashing: 0
 --- !u!114 &114372750018957018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -663,6 +668,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10000
+--- !u!114 &114530122107043120
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1855146083021646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0505f64c20de124c9998b52066ec572, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  phaseEffect: {fileID: 1043183820795028, guid: f7e62913fc48e7749aa0f8f43511169b,
+    type: 2}
+  willGrow: 1
 --- !u!114 &114538752717997798
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -674,10 +693,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 650373b2c0e4aca46b375bf252cee50d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chargeDelay: 0.18
+  chargeEffect: {fileID: 1000011440873762, guid: 0ffa3458daae3274db9af1b5e01ac987,
+    type: 2}
   hitboxDuration: 0.2
   successCancelTime: 0.05
   cancelTime: 0.4
-  lungeSpeed: 21
+  lungeSpeed: 25
   lungeTimer: 0.12
   shakeDuration: 0.1
   shakeAmount: 1.6
@@ -727,6 +749,7 @@ MonoBehaviour:
     type: 2}
   muzzleFlash: {fileID: 1000011656962290, guid: dbf1581a00a49504f9ec2383466761c4,
     type: 2}
+  startUpDelay: 0
   fireTime: 0.08
   canFire: 1
   isShooting: 0
@@ -735,6 +758,7 @@ MonoBehaviour:
   knockbackAmount: 0.6
   cancelTime: 0.05
   allowMovement: 1
+  knockbackTime: 0.05
   shakeDuration: 0.1
   shakeAmount: 0.3
   decreaseFactor: 1
@@ -750,6 +774,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockOnReticle: {fileID: 0}
+  facingRight: 1
   nearestEnemy: {fileID: 0}
   shouldLockOn: 1
 --- !u!114 &114692466567360946
@@ -782,7 +807,7 @@ MonoBehaviour:
     type: 2}
   muzzleFlash: {fileID: 1000011656962290, guid: dbf1581a00a49504f9ec2383466761c4,
     type: 2}
-  startUpDelay: 0
+  startUpDelay: 0.3
   fireTime: 0.4
   canFire: 1
   isShooting: 0
@@ -873,7 +898,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1262245505
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c323a922516272e418b13ab234327c1f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 55ed9ba471234d9459cc0f05e1f1dd55, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

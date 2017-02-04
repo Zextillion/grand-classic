@@ -55,7 +55,7 @@ public class FireTwoPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckForOtherFire();
+        //CheckForOtherFire();
         CheckForLift();
         if (canFire == true)
         {
@@ -85,20 +85,20 @@ public class FireTwoPlayer : MonoBehaviour
         }
     }
 
-    void CheckForOtherFire()
-    {
-        if (FireOnePlayer.current.isShooting == true)
-        {
-            if (Input.GetButtonDown("Fire2"))
-            {
-                FireOnePlayer.current.canFire = false;
-            }
-        }
-        else if (Input.GetButtonDown("Fire1"))
-        {
-            FireOnePlayer.current.canFire = true;
-        }
-    }
+    //void CheckForOtherFire()
+    //{
+    //    if (FireOnePlayer.current.isShooting == true)
+    //    {
+    //        if (Input.GetButtonDown("Fire2"))
+    //        {
+    //            FireOnePlayer.current.canFire = false;
+    //        }
+    //    }
+    //    else if (Input.GetButtonDown("Fire1"))
+    //    {
+    //        FireOnePlayer.current.canFire = true;
+    //    }
+    //}
 
     // Checks if player no longer pressing input
     void CheckForLift()
@@ -109,6 +109,13 @@ public class FireTwoPlayer : MonoBehaviour
             transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 0);
             PlayerManager.current.isShooting = false;
             hasShot = false;
+
+            // If cancelled shooting, reenable the ability to shoot
+            if (PlayerMovement.current.cancelledShooting == true)
+            {
+                PlayerManager.current.readyToShoot = true;
+                PlayerMovement.current.cancelledShooting = false;
+            }
         }
     }
 

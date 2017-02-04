@@ -20,7 +20,7 @@ public class LockOn : MonoBehaviour
     [HideInInspector]
     public bool shouldLockOn = true;       // If there is no lock on and a target enters the eligible range, lock on
 
-    private float disableLockOn = 0.0f;     // Countdown to disable lock on
+    private bool disableLockOn = false;     // Countdown to disable lock on
     private bool isDisabled = false;        // Checks if lock on is disabled
 
     // Use this for initialization
@@ -35,19 +35,17 @@ public class LockOn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetLockOn();
-        AdjustLockOnReticle();
-        CheckFacingRight();
-        ChangeRotation();
-        CheckForDeath();
-    }
-
-    // Checks for a doubletap
-    void FixedUpdate()
-    {
-        if (disableLockOn > 0.0f)
+        // If lock on is not disabled and there is a valid target, lock on
+        if ((shouldLockOn == true && isDisabled == false) || Input.GetButtonDown("LockOn"))
         {
-            disableLockOn -= Time.deltaTime;
+            GetLockOn();
+        }
+        if (nearestEnemy != null)
+        {
+            AdjustLockOnReticle();
+            CheckFacingRight();
+            ChangeRotation();
+            CheckForDeath();
         }
     }
 
@@ -57,20 +55,26 @@ public class LockOn : MonoBehaviour
         if (Input.GetButtonDown("LockOn"))
         {
             // If pressed fast enough, disable lock on
-            if (disableLockOn > 0.0f)
+            if (disableLockOn == true)
             {
                 nearestEnemy = null;
-                disableLockOn = 0.0f;
+                disableLockOn = false;
                 isDisabled = true;
 
                 reticleAnimator.SetBool("Exit", true);
                 Invoke("DisableExitAnim", 0.3f);
                 return;
             }
-            disableLockOn = 0.2f;
+            disableLockOn = true;
+            Invoke("DoubleTapLockOn", 0.2f);
             isDisabled = false;
             return;
         }
+    }
+
+    void DoubleTapLockOn()
+    {
+        disableLockOn = false;
     }
 
     // Acquires a lock on if there is a suitable target
@@ -80,33 +84,28 @@ public class LockOn : MonoBehaviour
 
         DisableLockOn();
 
-        // If lock on is not disabled and there is a valid target, lock on
-        if ((shouldLockOn == true && isDisabled == false) || Input.GetButtonDown("LockOn"))
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Enemies"))
         {
-            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Enemies"))
+            float distance = (transform.position - obj.transform.position).sqrMagnitude;
+            if (distance < nearestDistance)
             {
-                float distance = (transform.position - obj.transform.position).sqrMagnitude;
-                if (distance < nearestDistance)
+                if (disableLockOn == true && lockOnReticle.GetComponent<SpriteRenderer>().color.a < 0.534f)
                 {
-                    if (disableLockOn > 0.0f && lockOnReticle.GetComponent<SpriteRenderer>().color.a < 0.534f)
-                    {
-                        reticleAnimator.SetBool("Intro", true);
-                        Invoke("DisableIntroAnim", 0.3f);
-                    }
-                    nearestDistance = distance;
-                    nearestEnemy = obj;
-                    shouldLockOn = false;
+                    reticleAnimator.SetBool("Intro", true);
+                    Invoke("DisableIntroAnim", 0.3f);
                 }
+                nearestDistance = distance;
+                nearestEnemy = obj;
+                shouldLockOn = false;
             }
-            LockOnSound();
-
-            previousEnemy = nearestEnemy;
         }
+        LockOnSound();
+        previousEnemy = nearestEnemy;
     }
 
+    // Play lock on sound
     void LockOnSound()
     {
-        // If locked on and not locking on to the same enemy, adjust the lock on reticle
         if (nearestEnemy != null && nearestEnemy.transform.parent == true)
         {
             // Plays audio
@@ -124,6 +123,7 @@ public class LockOn : MonoBehaviour
         }
     }
 
+    // Updates the cursor's position each frame
     void AdjustLockOnReticle()
     {
         if (nearestEnemy != null)
@@ -145,22 +145,19 @@ public class LockOn : MonoBehaviour
     // If doing an action, change the rotation of the actor
     public void ChangeRotation()
     {
-        if (PlayerManager.current.canRotate == true)
+        // Checks if attacking
+        if (PlayerManager.current.isShooting == true || PlayerManager.current.isMeleeAttacking == true)
         {
-            // Checks if attacking
-            if (PlayerManager.current.isShooting == true || PlayerManager.current.isMeleeAttacking == true)
+            if (nearestEnemy != null && isDisabled == false)
             {
-                if (nearestEnemy != null && isDisabled == false)
-                {
-                    Vector3 vectorToTarget = nearestEnemy.transform.position - transform.position;
-                    float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
-                    Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 999999);
+                Vector3 vectorToTarget = nearestEnemy.transform.position - transform.position;
+                float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
+                Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+                transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 999999);
 
-                    if (!facingRight)
-                    {
-                        transform.rotation *= Quaternion.Euler(180f, 0, 0);
-                    }
+                if (!facingRight)
+                {
+                    transform.rotation *= Quaternion.Euler(180f, 0, 0);
                 }
             }
         }

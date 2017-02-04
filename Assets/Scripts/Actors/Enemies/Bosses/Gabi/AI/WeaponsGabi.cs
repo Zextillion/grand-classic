@@ -9,9 +9,13 @@ using UnityEngine;
  * Weapon 1: Circle attack (expands)
  * Weapon 2: Bulelt wall that speeds up
  * Weapon 3: Bullet "bubble"
+ * Weapon 4: Drone spawner
+ * Weapon 5: Missile launcher
  */
 public class WeaponsGabi : MonoBehaviour
 {
+    public static WeaponsGabi current;
+
     [SerializeField]
     float timeBetweenAttacks = 0.5f;        // The time in between attacks
     [SerializeField]
@@ -23,7 +27,10 @@ public class WeaponsGabi : MonoBehaviour
     private GameObject nextAttack;          // Her next attack
     private GameObject previousAttack;      // Her last used attack
 
-    private float disableWeapon = 0.2f;     // How long the attack lasts
+    [SerializeField]
+    float moveDelay = 0.5f;                 // How long she should stand still
+    private float initialMoveDelay;
+    private float disableWeapon = 0.3f;     // How long the attack lasts
     private float cooldown = 0.1f;          // The cooldown between her attacks
     private bool readyToAttack = true;      // If she is ready to attack
 
@@ -32,15 +39,22 @@ public class WeaponsGabi : MonoBehaviour
     private int numAttacks = 0;
     private bool rotateCircle = false;      // Checks if one of these shield things are up
 
-    private Health bossHealth;              // Used for checking the percent of remaining hp
+    [HideInInspector]
+    public Health bossHealth;              // Used for checking the percent of remaining hp
     [SerializeField]
-    GameObject[] ultimateAttacks = new GameObject[3];   
+    GameObject[] ultimateAttacks = new GameObject[3];
+    [SerializeField]
+    GameObject[] ultimateDrones = new GameObject[3];
     private bool[] ultimateAttacksCheck = new bool[3];  // Used to determine which stage of the boss it's on
+    private bool canRotate = true;
 
     void Awake()
     {
         lockOn = gameObject.GetComponent<NoRotationEnemyLockOn>();
+        initialMoveDelay = moveDelay;
         bossHealth = GetComponentInChildren<Health>();
+        current = this;
+
         for (int i = 0; i < ultimateAttacksCheck.Length; i++)
         {
             ultimateAttacksCheck[i] = false;
@@ -61,7 +75,7 @@ public class WeaponsGabi : MonoBehaviour
 
     void RandomTime()
     {
-        randomTime = Mathf.Floor(Random.value * 0.5f);
+        randomTime = Mathf.Floor(Random.value * marginTime);
     }
 
     // Enables the next weapon
@@ -69,11 +83,13 @@ public class WeaponsGabi : MonoBehaviour
     {
         if (readyToAttack)
         {
+            GetComponent<FollowObject>().enabled = false;
+            Invoke("EnableMovement", moveDelay);
+
             nextAttack.SetActive(true);
             readyToAttack = false;
             previousAttack = nextAttack;
             numAttacks++;
-            ChangeAttack();
             Invoke("DisableWeapon", disableWeapon);
         }
     }
@@ -120,63 +136,95 @@ public class WeaponsGabi : MonoBehaviour
         }
         else
         {
-            if (ultimateAttacksCheck[2] == true)
-            {
-                Debug.Log("Stage four");
-                StageOne();
-            }
-            else if (ultimateAttacksCheck[1] == true)
-            {
-                StageOne();
-                Debug.Log("Stage three");
-            }
-            else if (ultimateAttacksCheck[0] == true)
-            {
-                Debug.Log("Stage two");
-                StageOne();
-            }
-            else
-            {
-                Debug.Log("Stage one");
-                StageOne();
-            }
+            StageOne();
         }
+    }
+
+    #region Attacks
+    void UltimateAttack()
+    {
+        nextAttack.SetActive(true);
+
+        previousAttack = nextAttack;
+    }
+
+    void SecondUltimate()
+    {
+        previousAttack.SetActive(false);
+        canRotate = true;
+        readyToAttack = false;
+        ChangeRotation();
+        canRotate = false;
+
+        if (ultimateAttacksCheck[2] == true)
+        {
+            nextAttack = ultimateDrones[2];
+        }
+        else if (ultimateAttacksCheck[1] == true)
+        {
+            nextAttack = ultimateDrones[1];
+        }
+        else if (ultimateAttacksCheck[0] == true)
+        {
+            nextAttack = ultimateDrones[0];
+        }
+        nextAttack.SetActive(true);
+        nextAttack = ultimateAttacks[0];
+        Invoke("UltimateAttack", 1.0f);
+        Invoke("DisableWeapon", 2.0f);
+
+        InvokeRepeating("EnableWeapon", 2.01f, timeBetweenAttacks + randomTime);
     }
 
     // First ultimate
     void UltimateOne()
     {
-       // nextAttack = ultimateAttacks[0];
-        Debug.Log("Ultimate one!");
         ultimateAttacksCheck[0] = true;
+        nextAttack = ultimateAttacks[0];
 
-        // Swap weapons to stage two
-        StageOne(); //FIXME: Change to stage two
-        InvokeRepeating("EnableWeapon", 2.0f, timeBetweenAttacks + randomTime);
+        GetComponent<FollowObject>().enabled = false;
+        Invoke("EnableMovement", 5.0f);
+        readyToAttack = false;
+        canRotate = true;
+        ChangeRotation();
+        canRotate = false;
+
+        Invoke("UltimateAttack", 1.0f);
+        Invoke("DisableUltimate", 2.0f);
     }
 
     // Second ultimate
     void UltimateTwo()
     {
-     //   nextAttack = ultimateAttacks[1];
-        Debug.Log("Ultimate two!");
         ultimateAttacksCheck[1] = true;
+        nextAttack = ultimateAttacks[0];
 
-        // Swap weapons to stage three
-        StageOne(); //FIXME: Change to stage 3
-        InvokeRepeating("EnableWeapon", 2.0f, timeBetweenAttacks + randomTime);
+        GetComponent<FollowObject>().enabled = false;
+        Invoke("EnableMovement", 5.0f);
+        readyToAttack = false;
+        canRotate = true;
+        ChangeRotation();
+        canRotate = false;
+
+        Invoke("UltimateAttack", 1.0f);
+        Invoke("DisableUltimate", 2.0f);
     }
 
     // Third ultimate
     void UltimateThree()
     {
-     //   nextAttack = ultimateAttacks[2];
-        Debug.Log("Ultimate three!");
         ultimateAttacksCheck[2] = true;
+        nextAttack = ultimateAttacks[0];
 
-        // Swap weapons to stage four
-        StageOne(); //FIXME: Change to stage 4
-        InvokeRepeating("EnableWeapon", 2.0f, timeBetweenAttacks + randomTime);
+        GetComponent<FollowObject>().enabled = false;
+        Invoke("EnableMovement", 5.0f);
+        readyToAttack = false;
+        canRotate = true;
+        ChangeRotation();
+        canRotate = false;
+
+        Invoke("UltimateAttack", 1.0f);
+        Invoke("DisableUltimate", 2.0f);
     }
 
     // Attacks if no ultimates have played
@@ -194,17 +242,29 @@ public class WeaponsGabi : MonoBehaviour
         {
             int randomValue;
             randomValue = (int)Mathf.Floor(Random.value * 100);
-            if (randomValue >= 0 && randomValue < 60)
-            {   // 60% chance
-                BulletWall();               // Bullet wall attack
-            }
-            else if (randomValue >= 60 && randomValue < 100)
+
+            if (lockOn.nearestEnemy != null)
             {
-                CircleAttack();             // Circle attack
-            }
-            else
-            {
-                nextAttack = weapons[0];    // Default weapon: bullet wall
+                float distanceToPlayer;
+                distanceToPlayer = FindDistanceToObject.current.FindDistance(gameObject, lockOn.nearestEnemy);
+                Debug.Log("Distance" + distanceToPlayer);
+                if (distanceToPlayer < 13.0f)
+                {   // If player is in melee range
+                    moveDelay = 0.4f;
+                    MissileLauncher();
+                }
+                else if (randomValue >= 0 && randomValue < 60)
+                {   // 60% chance
+                    BulletWall();               // Bullet wall attack
+                }
+                else if (randomValue >= 60 && randomValue < 100)
+                {
+                    CircleAttack();             // Circle attack
+                }
+                else
+                {
+                    nextAttack = weapons[0];    // Default weapon: bullet wall
+                }
             }
         }
         else
@@ -212,6 +272,11 @@ public class WeaponsGabi : MonoBehaviour
             DeployDrone();
             numAttacks = 0;
         }
+    }
+
+    void MissileLauncher()
+    {
+        nextAttack = weapons[5];    // Missile launcher
     }
 
     // Changes next weapon to a bullet wall attack
@@ -274,62 +339,73 @@ public class WeaponsGabi : MonoBehaviour
     {
         nextAttack = weapons[4];    // Deploys a drone
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endregion
 
     // Disables the weapon
     void DisableWeapon()
     {
         previousAttack.SetActive(false);
+        ChangeAttack();
         Invoke("ResetReadyToAttack", cooldown);
+    }
+
+    void DisableUltimate()
+    {
+        previousAttack.SetActive(false);
+        SecondUltimate();
+    }
+
+    void EnableMovement()
+    {
+        canRotate = true;
+        GetComponent<FollowObject>().enabled = true;
+        moveDelay = initialMoveDelay;
     }
 
     // Resets readyToAttack
     void ResetReadyToAttack()
     {
         readyToAttack = true;
+        EnableMovement();
     }
 
     // Changes rotation to face lock on target
     void ChangeRotation()
     {
         // Checks if there is a lock on
-        if (lockOn.nearestEnemy != null && readyToAttack == false)
+        if (lockOn.nearestEnemy != null)
         {
-            Vector3 vectorToTarget = lockOn.nearestEnemy.transform.position - transform.position;
-            float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
-            Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
-            transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 999999);
-
-            if (!lockOn.facingRight)
+            if (canRotate == true)
             {
-               transform.rotation *= Quaternion.Euler(180f, 0, 0);
+                // If currently attacking
+                if (readyToAttack == false)
+                {
+                    Vector3 vectorToTarget = lockOn.nearestEnemy.transform.position - transform.position;
+                    float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
+                    Quaternion q = Quaternion.AngleAxis(angle, Vector3.forward);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * 999999);
+
+                    if (!lockOn.facingRight)
+                    {
+                        transform.rotation *= Quaternion.Euler(180f, 0, 0);
+                    }
+                }
+                else
+                {
+                    if (transform.position.x > lockOn.nearestEnemy.transform.position.x)
+                    {
+                        transform.rotation = lockOn.defaultRotation * Quaternion.Euler(0, 180f, 0);
+                    }
+                    else
+                    {
+                        transform.rotation = lockOn.defaultRotation;
+                    }
+                }
             }
         }
         else
         {
-            if (transform.position.x > lockOn.nearestEnemy.transform.position.x)
-            {
-                transform.rotation = lockOn.defaultRotation;
-                transform.rotation *= Quaternion.Euler(0, 180f, 0);
-            }
-            else
-            {
-                transform.rotation = lockOn.defaultRotation;   
-            }
+            transform.rotation = lockOn.defaultRotation;
         }
     }
 }

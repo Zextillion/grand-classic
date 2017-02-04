@@ -16,12 +16,9 @@ public class RecycleActor : MonoBehaviour
     [SerializeField]
     GameObject drop;
 
-    private GameObject playerManager;
-
     // Initialization
     void Awake()
     {
-        playerManager = GameObject.FindGameObjectWithTag("PlayerManager");
         destroyEffectName = destroyEffect.transform.name;
     }
 
