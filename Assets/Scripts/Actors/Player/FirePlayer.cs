@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class FireOnePlayer : MonoBehaviour
+public class FirePlayer : MonoBehaviour
 {
     [SerializeField]
     GameObject bulletPrefab;                // The bullet prefab to fire
@@ -16,12 +16,12 @@ public class FireOnePlayer : MonoBehaviour
     float startUpDelay = 0.0f;              // How long to wait until actually shooting
     [SerializeField]
     float fireTime = 0.1f;                  // How fast the gun shoots
-    [HideInInspector]
-    public bool isShooting = false;         // Cancels other input
+    private bool cooldown = true;           // Internal calculation for if a weapon can shoot - true means ready to shoot
 
     [SerializeField]
     bool singleShot = false;                // Determines if gun is a single-shot burst
     private bool hasShot = false;           // Determines if gun has fired
+
     [SerializeField]
     int spreadAngle = 10;                   // How big the spread should be
     [SerializeField]
@@ -31,8 +31,6 @@ public class FireOnePlayer : MonoBehaviour
     float cancelTime = 0.05f;               // When the player can act again after firing a bullet
     [SerializeField]
     bool allowMovement = true;              // If true, allow the player to move when attacking
-    [SerializeField]
-    float knockbackTime = 0.05f;            // How long the player is knocked back if movement is not allowed
 
     [SerializeField]
     float shakeDuration = 0.1f;             // How long the screen should shake.     
@@ -60,8 +58,10 @@ public class FireOnePlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckForLift();
-        if (singleShot == false || (singleShot == true && hasShot == false))
+        if ((singleShot == false || (singleShot == true && hasShot == false))
+        && PlayerManager.current.canAct == true
+        && PlayerManager.current.isMeleeAttacking == false
+        && cooldown == true)
         {
             CheckForInput();
         }
@@ -70,19 +70,13 @@ public class FireOnePlayer : MonoBehaviour
 
     void CheckForInput()
     {
-        if (Input.GetButton(fireButton)
-        && PlayerManager.current.canAct == true
-        && PlayerManager.current.isMeleeAttacking == false
-        && PlayerMovement.current.cancelledShooting == false)
-        {
-            PlayerManager.current.isShooting = true;
+        CheckForLift();
 
-            if (PlayerManager.current.readyToShoot
-                && PlayerManager.current.isDashing == false)
-            {   // If the gun is not on cooldown
-                StartUpDelay();
-                isShooting = true;
-            }
+        if (Input.GetButton(fireButton) && (PlayerManager.current.fireButton == fireButton || PlayerManager.current.fireButton == ""))
+        {
+            PlayerManager.current.fireButton = fireButton;
+            hasShot = true;
+            StartUpDelay();
         }
     }
 
@@ -93,28 +87,22 @@ public class FireOnePlayer : MonoBehaviour
         {
             // Reinitializes the spread
             transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 0);
-            PlayerManager.current.isShooting = false;
             hasShot = false;
-
-            // If cancelled shooting, reenable the ability to shoot
-            if (PlayerMovement.current.cancelledShooting == true)
-            {
-                PlayerManager.current.readyToShoot = true;
-                PlayerMovement.current.cancelledShooting = false;
-            }
         }
     }
 
     #region Fire
     void StartUpDelay()
     {
-        BlockMovement();
-        DisableActing();
-        FaceEnemy();
+        PlayerManager.current.isShooting = true;
+        if (singleShot == true || allowMovement == false)
+        {
+            DisableActing();
+        }
         Invoke("Fire", startUpDelay);
     }
 
-    void BlockMovement()
+    void DisableActing()
     {
         if (allowMovement == false)
         {
@@ -123,21 +111,11 @@ public class FireOnePlayer : MonoBehaviour
         }
     }
 
-    void DisableActing()
-    {
-        PlayerManager.current.readyToShoot = false;
-        hasShot = true;
-    }
-
-    void FaceEnemy()
-    {
-        PlayerManager.current.canRotate = true;
-        LockOn.current.ChangeRotation();
-    }
-
     // Main fire function
     void Fire()
     {
+        cooldown = false;
+        Invoke("CanAct", cancelTime);
         // Do not fire bullets that are already active
         // Gets an object from the pool
         GameObject obj = ObjectPooler.current.GetObjectForType(bulletName, willGrow);
@@ -151,25 +129,15 @@ public class FireOnePlayer : MonoBehaviour
             obj.transform.rotation = transform.rotation;
             obj.SetActive(true);
         }
-
         PlayAudio();
-
-        Cooldown();
-
         MuzzleFlash();
-
-        Knockback();
-
-        Spread();
-
-        Screenshake();
-    }
-
-    // How fast the gun can fire
-    void Cooldown()
-    {
+        // Knockback
+        rb.AddForce(transform.right * knockbackAmount * 1000 * -1);
+        // Spread
+        transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, Random.Range(spreadAngle, -spreadAngle));
+        // Camerashake
+        CameraShake.current.Shake(shakeDuration, shakeAmount, decreaseFactor);
         Invoke("ResetFireTime", fireTime);
-        Invoke("CanAct", cancelTime);
     }
 
     void PlayAudio()
@@ -198,21 +166,6 @@ public class FireOnePlayer : MonoBehaviour
             }
         }
     }
-
-    void Knockback()
-    {
-        rb.AddForce(transform.right * knockbackAmount * 1000 * -1);
-    }
-
-    void Spread()
-    {
-        transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, Random.Range(spreadAngle, -spreadAngle));
-    }
-
-    void Screenshake()
-    {
-        CameraShake.current.Shake(shakeDuration, shakeAmount, decreaseFactor);
-    }
     #endregion
 
     #region End Attack
@@ -220,15 +173,20 @@ public class FireOnePlayer : MonoBehaviour
     void ResetFireTime()
     {
         PlayerManager.current.readyToShoot = true;
+        cooldown = true;
     }
 
     // Allows the player to do other actions again
     void CanAct()
-    {
-        PlayerManager.current.canRotate = false;
+    {        
         PlayerManager.current.canAct = true;
         PlayerManager.current.canMove = true;
-        isShooting = false;
+
+        PlayerManager.current.isShooting = false;
+        if (Input.GetButton(fireButton) == false)
+        {
+            PlayerManager.current.fireButton = "";
+        }
     }
     #endregion
 
@@ -237,6 +195,7 @@ public class FireOnePlayer : MonoBehaviour
     {
         if (PlayerManager.current.isMeleeAttacking == true)
         {
+            PlayerManager.current.fireButton = "";
             CancelInvoke();
         }
     }

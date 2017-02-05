@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PowerUpManager : MonoBehaviour
 {
-    public FireOnePlayer[] weapons;
+    public FirePlayer[] weapons;
     private int powerLevel = 0;
     [SerializeField]
     GameObject maximumPower;

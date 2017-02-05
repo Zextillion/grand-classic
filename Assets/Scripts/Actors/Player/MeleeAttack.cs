@@ -126,7 +126,6 @@ public class MeleeAttack : MonoBehaviour
 
     void FaceEnemy()
     {
-        PlayerManager.current.canRotate = true;
         LockOn.current.ChangeRotation();
     }
 
@@ -160,14 +159,10 @@ public class MeleeAttack : MonoBehaviour
 
     void CanAct()
     {
-        //FireOnePlayer.current.CancelInvoke();
-        FireTwoPlayer.current.CancelInvoke();
-
         PlayerManager.current.isMeleeAttacking = false;
         PlayerManager.current.readyToShoot = true;
         PlayerManager.current.canAct = true;
         PlayerManager.current.canMove = true;
-        PlayerManager.current.canRotate = false;
         PlayerManager.current.isDashing = false;
 
         successfulHit = false;

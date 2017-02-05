@@ -607,14 +607,11 @@ MonoBehaviour:
     type: 2}
   startUpDelay: 0.06
   fireTime: 0.08
-  canFire: 1
-  isShooting: 0
   singleShot: 0
   spreadAngle: 28
-  knockbackAmount: 0.6
+  knockbackAmount: 0
   cancelTime: 0.05
   allowMovement: 1
-  knockbackTime: 0.05
   shakeDuration: 0.1
   shakeAmount: 0.15
   decreaseFactor: 1
@@ -2361,14 +2358,11 @@ MonoBehaviour:
     type: 2}
   startUpDelay: 0.03
   fireTime: 0.08
-  canFire: 1
-  isShooting: 0
   singleShot: 0
   spreadAngle: 16
-  knockbackAmount: 0.6
+  knockbackAmount: 0
   cancelTime: 0.05
   allowMovement: 1
-  knockbackTime: 0.05
   shakeDuration: 0.1
   shakeAmount: 0.15
   decreaseFactor: 1
@@ -4824,14 +4818,11 @@ MonoBehaviour:
     type: 2}
   startUpDelay: 0
   fireTime: 0.06
-  canFire: 1
-  isShooting: 0
   singleShot: 0
   spreadAngle: 8
   knockbackAmount: 0.6
   cancelTime: 0.05
   allowMovement: 1
-  knockbackTime: 0.05
   shakeDuration: 0.1
   shakeAmount: 0.15
   decreaseFactor: 1
@@ -5688,13 +5679,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 1000012055397142, guid: c72f3942d8473fb49adf26eb7523f10c,
     type: 2}
+  willGrow: 1
+  bulletName: 
   muzzleFlash: {fileID: 1000011656962290, guid: dbf1581a00a49504f9ec2383466761c4,
     type: 2}
+  muzzleFlashName: 
   startUpDelay: 0.3
   fireTime: 0.4
   canFire: 1
   isShooting: 0
   singleShot: 1
+  hasShot: 0
   spreadAngle: 0
   knockbackAmount: 1.7
   cancelTime: 0.4
@@ -5720,14 +5715,11 @@ MonoBehaviour:
     type: 2}
   startUpDelay: 0.3
   fireTime: 0.4
-  canFire: 1
-  isShooting: 0
   singleShot: 1
   spreadAngle: 0
-  knockbackAmount: 1
-  cancelTime: 0.05
+  knockbackAmount: 1.7
+  cancelTime: 0.1
   allowMovement: 0
-  knockbackTime: 0.1
   shakeDuration: 0.3
   shakeAmount: 0.7
   decreaseFactor: 1
@@ -8208,7 +8200,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 1808504912}
-  cancelledShooting: 0
 --- !u!114 &1808504914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8227,11 +8218,11 @@ MonoBehaviour:
   isShooting: 0
   canAct: 1
   canMove: 1
-  canRotate: 0
   bodyAnimator: {fileID: 0}
+  fireButton: 
   speed: 4.6
-  dashSpeed: 40
-  lungeTime: 0.18
+  dashSpeed: 32
+  lungeTime: 0.24
   continuousAttacking: 0
 --- !u!1 &1836825426
 GameObject:

@@ -43,7 +43,10 @@ public class RecycleActor : MonoBehaviour
             Instantiate(drop, transform.position, drop.transform.rotation);
         }
 
-        LockOn.current.shouldLockOn = true;
+        if (LockOn.current.nearestEnemy == gameObject)
+        {
+            LockOn.current.shouldLockOn = true;
+        }
 
         ObjectPooler.current.CreatePool(objectToDestroy);
     }

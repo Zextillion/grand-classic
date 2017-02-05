@@ -8,19 +8,14 @@ public class PlayerMovement : MonoBehaviour
     public static PlayerMovement current;
 
     float speed = 10.0f;
-    float initialSpeed;
     float dashSpeed = 30.0f;
     float lungeTime = 0.1f;                     // Initial dash timer
     private Vector2 lungeDirection;
-    private Vector3 previousPosition;
 
     [HideInInspector]
     public Rigidbody2D rb;
     
     private GameObject hitbox;
-
-    [HideInInspector]
-    public bool cancelledShooting = false;      // Check for if player was shooting at the time
 
     void Awake()
     {
@@ -32,10 +27,8 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         speed = PlayerManager.current.speed;
-        initialSpeed = speed;
         dashSpeed = PlayerManager.current.dashSpeed;
         lungeTime = PlayerManager.current.lungeTime;
-        previousPosition = transform.position;
     }
 
     void Update()
@@ -45,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
             BasicMovement();
         }
 
-        if (Input.GetButtonDown("Dash") && PlayerManager.current.canAct)
+        if (Input.GetButtonDown("Dash") && PlayerManager.current.canAct && PlayerManager.current.isShooting == false && PlayerManager.current.fireButton == "")
         {
             Dash();
         }
@@ -61,40 +54,24 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.velocity = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * speed * 100 * Time.deltaTime;
         MoveAnimation();
-        previousPosition = transform.position;
     }
 
     // Turns player around depending on direction travelling relative to 
     public void MoveAnimation()
     {
-        if (LockOn.current.facingRight == true)
+        if (((rb.velocity.x < 0) != LockOn.current.facingRight) || rb.velocity.x == 0 )
         {
-            if (previousPosition.x > transform.position.x)
-            {
-                PlayerManager.current.bodyAnimator.SetBool("movingBack", true);
-            }
-            else 
-            {
-                PlayerManager.current.bodyAnimator.SetBool("movingBack", false);
-            }
+            PlayerManager.current.bodyAnimator.SetBool("movingBack", false);
         }
         else
         {
-            if (previousPosition.x < transform.position.x)
-            {
-                PlayerManager.current.bodyAnimator.SetBool("movingBack", true);
-            }
-            else
-            {
-                PlayerManager.current.bodyAnimator.SetBool("movingBack", false);
-            }
+            PlayerManager.current.bodyAnimator.SetBool("movingBack", true);
         }
     }
 
     void Dash()
     {
         CancelInvoke();
-        CancelShooting();
         lungeDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         if (lungeDirection == Vector2.zero)
         {
@@ -130,15 +107,5 @@ public class PlayerMovement : MonoBehaviour
     void AllowHit()
     {
         hitbox.layer = LayerMask.NameToLayer("Player");
-    }
-
-    void CancelShooting()
-    {
-        if (PlayerManager.current.isShooting == true)
-        {
-            PlayerManager.current.readyToShoot = false;
-            PlayerManager.current.isShooting = false;
-            cancelledShooting = true;
-        }
     }
 }

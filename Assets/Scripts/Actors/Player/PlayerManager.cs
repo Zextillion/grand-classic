@@ -7,7 +7,7 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager current;
     [HideInInspector]
-    public bool readyToShoot = true;        // Check if player can shoot
+    public bool readyToShoot = true;        // Check if player can shoot (cooldown over)
     [HideInInspector]
     public bool isDashing = false;          // Checks for the initial "lunge", NOT if it's still dashing
     [HideInInspector]
@@ -19,9 +19,9 @@ public class PlayerManager : MonoBehaviour
     [HideInInspector]
     public bool canMove = true;             // Checks if player can move
     [HideInInspector]
-    public bool canRotate = false;          // Checks if player can rotate (to lock on)
-    [HideInInspector]
     public Animator bodyAnimator;           // Animator for the main sprite
+    [HideInInspector]
+    public string fireButton;
 
     public float speed = 1.0f;
     public float dashSpeed = 2.0f;
