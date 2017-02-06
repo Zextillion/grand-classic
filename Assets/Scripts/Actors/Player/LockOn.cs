@@ -146,7 +146,6 @@ public class LockOn : MonoBehaviour
     public void ChangeRotation()
     {
         // Checks if attacking
-        Debug.Log(PlayerManager.current.fireButton);
         if (PlayerManager.current.isShooting == true || PlayerManager.current.isMeleeAttacking == true || PlayerManager.current.fireButton != "")
         {
             if (nearestEnemy != null && isDisabled == false)

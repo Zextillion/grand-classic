@@ -60,22 +60,24 @@ public class FirePlayer : MonoBehaviour
     {
         if ((singleShot == false || (singleShot == true && hasShot == false))
         && PlayerManager.current.canAct == true
-        && PlayerManager.current.isMeleeAttacking == false
         && cooldown == true)
         {
             CheckForInput();
         }
         CheckForMelee();
+        CheckForLift();
     }
 
     void CheckForInput()
     {
-        CheckForLift();
-
         if (Input.GetButton(fireButton) && (PlayerManager.current.fireButton == fireButton || PlayerManager.current.fireButton == ""))
         {
+            if (singleShot == true)
+            {
+                hasShot = true;
+            }
             PlayerManager.current.fireButton = fireButton;
-            hasShot = true;
+            cooldown = false;
             StartUpDelay();
         }
     }
@@ -87,15 +89,18 @@ public class FirePlayer : MonoBehaviour
         {
             // Reinitializes the spread
             transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 0);
-            hasShot = false;
+            if (singleShot == true)
+            {
+                hasShot = false;
+            }
         }
     }
 
     #region Fire
     void StartUpDelay()
     {
-        PlayerManager.current.isShooting = true;
-        if (singleShot == true || allowMovement == false)
+        PlayerManager.current.IsShooting(startUpDelay + cancelTime);
+        if (allowMovement == false)
         {
             DisableActing();
         }
@@ -104,18 +109,13 @@ public class FirePlayer : MonoBehaviour
 
     void DisableActing()
     {
-        if (allowMovement == false)
-        {
-            PlayerMovement.current.rb.velocity = Vector2.zero;
-            PlayerManager.current.canMove = false;
-        }
+        PlayerMovement.current.rb.velocity = Vector2.zero;
+        PlayerManager.current.canMove = false;
     }
 
     // Main fire function
     void Fire()
     {
-        cooldown = false;
-        Invoke("CanAct", cancelTime);
         // Do not fire bullets that are already active
         // Gets an object from the pool
         GameObject obj = ObjectPooler.current.GetObjectForType(bulletName, willGrow);
@@ -135,9 +135,10 @@ public class FirePlayer : MonoBehaviour
         rb.AddForce(transform.right * knockbackAmount * 1000 * -1);
         // Spread
         transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, Random.Range(spreadAngle, -spreadAngle));
-        // Camerashake
+        // Screen shake
         CameraShake.current.Shake(shakeDuration, shakeAmount, decreaseFactor);
         Invoke("ResetFireTime", fireTime);
+        Invoke("CanAct", cancelTime);
     }
 
     void PlayAudio()
@@ -181,12 +182,6 @@ public class FirePlayer : MonoBehaviour
     {        
         PlayerManager.current.canAct = true;
         PlayerManager.current.canMove = true;
-
-        PlayerManager.current.isShooting = false;
-        if (Input.GetButton(fireButton) == false)
-        {
-            PlayerManager.current.fireButton = "";
-        }
     }
     #endregion
 
@@ -195,7 +190,6 @@ public class FirePlayer : MonoBehaviour
     {
         if (PlayerManager.current.isMeleeAttacking == true)
         {
-            PlayerManager.current.fireButton = "";
             CancelInvoke();
         }
     }

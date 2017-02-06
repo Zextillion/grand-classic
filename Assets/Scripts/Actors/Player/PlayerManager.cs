@@ -36,4 +36,19 @@ public class PlayerManager : MonoBehaviour
         current = this;
         bodyAnimator = transform.Find("Sprite").GetComponent<Animator>();
     }
+
+    // Disables isShooting. Cancel time is cancel time with a short buffer.
+    public void IsShooting(float cancelTime)
+    {
+        CancelInvoke();
+        cancelTime += 0.1f;
+        isShooting = true;
+        Invoke("DisableIsShooting", cancelTime);
+    }
+
+    void DisableIsShooting()
+    {
+        isShooting = false;
+        fireButton = "";
+    }
 }

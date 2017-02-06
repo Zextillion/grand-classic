@@ -254,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9951711e0848f2a498f7a86bc74295a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 65
+  maxHealth: 150
 --- !u!114 &114697514202600606
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -282,6 +282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockOnReticle: {fileID: 0}
+  rotateSpeed: 99999
   nearestEnemy: {fileID: 0}
   defaultRotation: {x: 0, y: 0, z: 0, w: 0}
   facingRight: 1
