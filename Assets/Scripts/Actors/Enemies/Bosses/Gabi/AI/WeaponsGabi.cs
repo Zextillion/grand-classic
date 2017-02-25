@@ -17,9 +17,13 @@ public class WeaponsGabi : MonoBehaviour
     public static WeaponsGabi current;
 
     [SerializeField]
+    float timeBetweenBursts = 3.0f;         // The time in between bursts
+    [SerializeField]
+    int numberOfAttacks = 1;                // The amount of attacks in one burst
+    [SerializeField]
     float timeBetweenAttacks = 0.5f;        // The time in between attacks
     [SerializeField]
-    float marginTime = 0.0f;                // The margin of error
+    float marginTime = 0.0f;                // The random time between individual attacks
     private float randomTime = 0.0f;
 
     [SerializeField]
@@ -37,6 +41,7 @@ public class WeaponsGabi : MonoBehaviour
     private NoRotationEnemyLockOn lockOn;
 
     private int numAttacks = 0;
+    private int numBursts = 0;
     private bool rotateCircle = false;      // Checks if one of these shield things are up
 
     [HideInInspector]
@@ -65,7 +70,7 @@ public class WeaponsGabi : MonoBehaviour
     {
         nextAttack = weapons[0];    // Bullet wall will always be the first attack
         RandomTime();
-        InvokeRepeating("EnableWeapon", 2.0f, timeBetweenAttacks + randomTime);
+        Invoke("EnableWeapon", 2.0f);
     }
 
     void Update()
@@ -81,17 +86,13 @@ public class WeaponsGabi : MonoBehaviour
     // Enables the next weapon
     void EnableWeapon()
     {
-        if (readyToAttack)
-        {
-            GetComponent<FollowObject>().enabled = false;
-            Invoke("EnableMovement", moveDelay);
+        GetComponent<FollowObject>().enabled = false;
 
-            nextAttack.SetActive(true);
-            readyToAttack = false;
-            previousAttack = nextAttack;
-            numAttacks++;
-            Invoke("DisableWeapon", disableWeapon);
-        }
+        nextAttack.SetActive(true);
+        readyToAttack = false;
+        previousAttack = nextAttack;
+        numAttacks++;
+        Invoke("DisableWeapon", disableWeapon);
     }
 
     // Changes the attack
@@ -172,8 +173,6 @@ public class WeaponsGabi : MonoBehaviour
         nextAttack = ultimateAttacks[0];
         Invoke("UltimateAttack", 1.0f);
         Invoke("DisableWeapon", 2.0f);
-
-        InvokeRepeating("EnableWeapon", 2.01f, timeBetweenAttacks + randomTime);
     }
 
     // First ultimate
@@ -238,39 +237,32 @@ public class WeaponsGabi : MonoBehaviour
                 i++;
             }   
         }
-        if (numAttacks < 4 + (i * 2))
-        {
-            int randomValue;
-            randomValue = (int)Mathf.Floor(Random.value * 100);
 
-            if (lockOn.nearestEnemy != null)
-            {
-                float distanceToPlayer;
-                distanceToPlayer = FindDistanceToObject.current.FindDistance(gameObject, lockOn.nearestEnemy);
-                Debug.Log("Distance" + distanceToPlayer);
-                if (distanceToPlayer < 13.0f)
-                {   // If player is in melee range
-                    moveDelay = 0.4f;
-                    MissileLauncher();
-                }
-                else if (randomValue >= 0 && randomValue < 60)
-                {   // 60% chance
-                    BulletWall();               // Bullet wall attack
-                }
-                else if (randomValue >= 60 && randomValue < 100)
-                {
-                    CircleAttack();             // Circle attack
-                }
-                else
-                {
-                    nextAttack = weapons[0];    // Default weapon: bullet wall
-                }
-            }
-        }
-        else
+        int randomValue;
+        randomValue = (int)Mathf.Floor(Random.value * 100);
+
+        if (lockOn.nearestEnemy != null)
         {
-            DeployDrone();
-            numAttacks = 0;
+            float distanceToPlayer;
+            distanceToPlayer = FindDistanceToObject.current.FindDistance(gameObject, lockOn.nearestEnemy);
+            Debug.Log("Distance" + distanceToPlayer);
+            if (distanceToPlayer < 13.0f)
+            {   // If player is in melee range
+                moveDelay = 0.4f;
+                MissileLauncher();
+            }
+            else if (randomValue >= 0 && randomValue < 60)
+            {   // 60% chance
+                BulletWall();               // Bullet wall attack
+            }
+            else if (randomValue >= 60 && randomValue < 100)
+            {
+                CircleAttack();             // Circle attack
+            }
+            else
+            {
+                nextAttack = weapons[0];    // Default weapon: bullet wall
+            }
         }
     }
 
@@ -337,7 +329,11 @@ public class WeaponsGabi : MonoBehaviour
 
     void DeployDrone()
     {
-        nextAttack = weapons[4];    // Deploys a drone
+        if (numBursts == 3)
+        {
+            nextAttack = weapons[4];    // Deploys a drone
+            numBursts = 0;
+        }
     }
 #endregion
 
@@ -345,8 +341,25 @@ public class WeaponsGabi : MonoBehaviour
     void DisableWeapon()
     {
         previousAttack.SetActive(false);
-        ChangeAttack();
-        Invoke("ResetReadyToAttack", cooldown);
+        if (numAttacks > numberOfAttacks)
+        {
+            ChangeAttack();
+            cooldown = timeBetweenBursts + randomTime;
+            EnableMovement();
+            numAttacks = 0;
+            numBursts++;
+        }
+        else if (numAttacks == numberOfAttacks)
+        {
+            DeployDrone();
+        }
+        else
+        {
+            ChangeAttack();
+            cooldown = timeBetweenAttacks;
+            readyToAttack = true;
+        }
+        Invoke("EnableWeapon", cooldown);
     }
 
     void DisableUltimate()
@@ -362,13 +375,6 @@ public class WeaponsGabi : MonoBehaviour
         moveDelay = initialMoveDelay;
     }
 
-    // Resets readyToAttack
-    void ResetReadyToAttack()
-    {
-        readyToAttack = true;
-        EnableMovement();
-    }
-
     // Changes rotation to face lock on target
     void ChangeRotation()
     {
@@ -378,7 +384,7 @@ public class WeaponsGabi : MonoBehaviour
             if (canRotate == true)
             {
                 // If currently attacking
-                if (readyToAttack == false)
+                if (numAttacks < numberOfAttacks && GetComponent<FollowObject>().enabled == false)
                 {
                     Vector3 vectorToTarget = lockOn.nearestEnemy.transform.position - transform.position;
                     float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;

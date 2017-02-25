@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     {
         current = this;
         rb = GetComponent<Rigidbody2D>();
-        hitbox = GameObject.Find("Hitbox");
+        hitbox = transform.Find("Hitbox").gameObject;
     }
 
     void Start()
@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
             BasicMovement();
         }
 
-        if (Input.GetButtonDown("Dash") && PlayerManager.current.canAct && PlayerManager.current.isShooting == false && PlayerManager.current.fireButton == "")
+        if (Input.GetButtonDown("Dash") && (PlayerManager.current.canAct || PlayerManager.current.canMove) && PlayerManager.current.isShooting == false)
         {
             Dash();
         }

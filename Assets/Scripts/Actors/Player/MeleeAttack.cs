@@ -8,13 +8,6 @@ public class MeleeAttack : MonoBehaviour
     RequireComponent BoxCollider2D;         // This script needs a Box Collider 2D in order to work
 
     [SerializeField]
-    float chargeDelay = 0.1f;               // The delay until a charge attack can be executed
-    private bool charging = false;          // Determines if currently charging
-    [SerializeField]
-    GameObject chargeEffect;                // The effect to signify you are done charging
-    private bool willGrow = true;           // Will grow the object pool if more is needed
-
-    [SerializeField]
     float hitboxDuration = 0.1f;            // Determines how long the hitbox stays up
     [SerializeField]
     float successCancelTime = 0.05f;        // The cancel time if successfully hits a target
@@ -38,6 +31,9 @@ public class MeleeAttack : MonoBehaviour
     private Transform parent;               // Parent of what should be the hitbox and sprite of the melee weapon
     private SpriteRenderer sprite;          // Sprite of the melee weapon
 
+    [SerializeField]
+    string fireButton;
+
     void Awake()
     {
         col = GetComponent<BoxCollider2D>();
@@ -50,24 +46,14 @@ public class MeleeAttack : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		if (Input.GetButtonDown("Fire3") && PlayerManager.current.isMeleeAttacking == false && PlayerManager.current.canAct)
+		if (Input.GetButtonDown(fireButton) && PlayerManager.current.isMeleeAttacking == false && PlayerManager.current.canAct && PlayerManager.current.fireButton == "")
         {
             if (PlayerManager.current.isDashing == false)
             {   // If not on cooldown
-                charging = true;
-                Invoke("Charging", chargeDelay);
+                PlayerManager.current.fireButton = fireButton;
                 DisableActions();
+                Attack();
             }
-        }
-
-        if (Input.GetButtonUp("Fire3") && charging == true)
-        {
-            gameObject.layer = LayerMask.NameToLayer("PlayerBullets");
-            Attack();
-        }
-        else if (Input.GetButtonUp("Fire3") && charging == false)
-        {
-            ChargeAttack();
         }
     }
 
@@ -75,33 +61,7 @@ public class MeleeAttack : MonoBehaviour
     {
         PlayerManager.current.isMeleeAttacking = true;
 
-        FaceEnemy();
-
-        PlayerManager.current.readyToShoot = false;
         PlayerManager.current.canAct = false;
-    }
-
-    void Charging()
-    {
-        charging = false;
-        
-        GameObject obj = ObjectPooler.current.GetObjectForType(chargeEffect.transform.name, willGrow);
-        if (obj == null)
-        {
-            return;
-        }
-        else
-        {   // else fire a bullet from the position of the barrel
-            obj.transform.position = transform.position;
-            obj.transform.rotation = transform.rotation;
-            obj.SetActive(true);
-        }
-    }
-
-    void ChargeAttack()
-    {
-        gameObject.layer = LayerMask.NameToLayer("Player");
-        Attack();
     }
 
     // Enables the hitbox and sprite
@@ -109,6 +69,8 @@ public class MeleeAttack : MonoBehaviour
     {
         col.enabled = true;     // Enables hitbox
         sprite.enabled = true;  // Enables sprite
+
+        LockOn.current.ChangeRotation();
 
         // Lunge
         lungeCounter = 0.0f;
@@ -122,11 +84,6 @@ public class MeleeAttack : MonoBehaviour
         Invoke("CanAct", cancelTime);
 
         Screenshake();
-    }
-
-    void FaceEnemy()
-    {
-        LockOn.current.ChangeRotation();
     }
 
     void Screenshake()
@@ -159,8 +116,8 @@ public class MeleeAttack : MonoBehaviour
 
     void CanAct()
     {
+        PlayerManager.current.IsShooting(0.0f);
         PlayerManager.current.isMeleeAttacking = false;
-        PlayerManager.current.readyToShoot = true;
         PlayerManager.current.canAct = true;
         PlayerManager.current.canMove = true;
         PlayerManager.current.isDashing = false;

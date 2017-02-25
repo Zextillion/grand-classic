@@ -11,6 +11,13 @@ public class Health : MonoBehaviour
     private GameObject circleExplosionSmall;
     private GameObject circleExplosionBig;
 
+    [SerializeField]
+    float movementTimer = 0.0f;
+    [SerializeField]
+    float invinicbilityTimer = 0.0f;
+
+    private LayerMask initialLayer;
+
 	// Use this for initialization
 	void Awake ()
     {
@@ -18,6 +25,8 @@ public class Health : MonoBehaviour
         circleExplosionBig = (GameObject)Resources.Load("circleExplosionBig");
 
         currentHealth = maxHealth;
+
+        initialLayer = gameObject.layer;
     }
 
 	// Update is called once per frame
@@ -32,6 +41,11 @@ public class Health : MonoBehaviour
         if (Random.value < 0.04 && gameObject.tag == "Enemies")
         {   // Instantiate circle explosion
             GameObject.Instantiate(circleExplosionSmall, transform.position, transform.rotation);
+        }
+
+        if (invinicbilityTimer > 0.0f && damage != 0)
+        {
+            Invincible();
         }
 
         // Death
@@ -59,5 +73,25 @@ public class Health : MonoBehaviour
     {
         healthPercent = (float)currentHealth / (float)maxHealth * 100;
         return healthPercent;
+    }
+
+    void Invincible()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Invincible");
+        PlayerManager.current.canAct = false;
+        PlayerManager.current.canMove = false;
+        Invoke("AllowMovement", movementTimer);
+        Invoke("DisableInvincible", invinicbilityTimer);
+    }
+
+    void AllowMovement()
+    {
+        PlayerManager.current.canAct = true;
+        PlayerManager.current.canMove = true;
+    }
+
+    void DisableInvincible()
+    {
+        gameObject.layer = initialLayer;
     }
 }

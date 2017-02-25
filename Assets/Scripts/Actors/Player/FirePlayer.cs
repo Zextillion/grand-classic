@@ -24,6 +24,7 @@ public class FirePlayer : MonoBehaviour
 
     [SerializeField]
     int spreadAngle = 10;                   // How big the spread should be
+    private Quaternion initialAngle;        // The inital angle of the weapon
     [SerializeField]
     float knockbackAmount = 1.0f;           // How far the gun should knockback the user
 
@@ -48,6 +49,7 @@ public class FirePlayer : MonoBehaviour
     {
         bulletName = bulletPrefab.transform.name;
         muzzleFlashName = muzzleFlash.transform.name;
+        initialAngle = transform.localRotation;
     }
 
     void Start()
@@ -60,6 +62,7 @@ public class FirePlayer : MonoBehaviour
     {
         if ((singleShot == false || (singleShot == true && hasShot == false))
         && PlayerManager.current.canAct == true
+        && PlayerManager.current.isDashing == false
         && cooldown == true)
         {
             CheckForInput();
@@ -72,10 +75,6 @@ public class FirePlayer : MonoBehaviour
     {
         if (Input.GetButton(fireButton) && (PlayerManager.current.fireButton == fireButton || PlayerManager.current.fireButton == ""))
         {
-            if (singleShot == true)
-            {
-                hasShot = true;
-            }
             PlayerManager.current.fireButton = fireButton;
             cooldown = false;
             StartUpDelay();
@@ -85,14 +84,11 @@ public class FirePlayer : MonoBehaviour
     // Checks if player no longer pressing input
     void CheckForLift()
     {
-        if (Input.GetButtonUp(fireButton))
+        if (Input.GetButton(fireButton) == false)
         {
             // Reinitializes the spread
-            transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 0);
-            if (singleShot == true)
-            {
-                hasShot = false;
-            }
+            transform.localRotation = initialAngle;
+            hasShot = false;
         }
     }
 
@@ -104,7 +100,15 @@ public class FirePlayer : MonoBehaviour
         {
             DisableActing();
         }
-        Invoke("Fire", startUpDelay);
+        if (hasShot == false)
+        {
+            hasShot = true;
+            Invoke("Fire", startUpDelay);
+        }
+        else
+        {
+            Fire();
+        }
     }
 
     void DisableActing()
@@ -118,6 +122,7 @@ public class FirePlayer : MonoBehaviour
     {
         // Do not fire bullets that are already active
         // Gets an object from the pool
+        LockOn.current.ChangeRotation();
         GameObject obj = ObjectPooler.current.GetObjectForType(bulletName, willGrow);
         if (obj == null)
         {
@@ -134,7 +139,10 @@ public class FirePlayer : MonoBehaviour
         // Knockback
         rb.AddForce(transform.right * knockbackAmount * 1000 * -1);
         // Spread
-        transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, Random.Range(spreadAngle, -spreadAngle));
+        if (singleShot == false)
+        {
+            transform.localRotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, initialAngle.z + Random.Range(spreadAngle, -spreadAngle));
+        }
         // Screen shake
         CameraShake.current.Shake(shakeDuration, shakeAmount, decreaseFactor);
         Invoke("ResetFireTime", fireTime);
@@ -173,7 +181,6 @@ public class FirePlayer : MonoBehaviour
     // Allows the gun to shoot again
     void ResetFireTime()
     {
-        PlayerManager.current.readyToShoot = true;
         cooldown = true;
     }
 
@@ -190,7 +197,7 @@ public class FirePlayer : MonoBehaviour
     {
         if (PlayerManager.current.isMeleeAttacking == true)
         {
-            CancelInvoke();
+            //CancelInvoke();
         }
     }
 }

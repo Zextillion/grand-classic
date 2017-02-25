@@ -7,8 +7,6 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager current;
     [HideInInspector]
-    public bool readyToShoot = true;        // Check if player can shoot (cooldown over)
-    [HideInInspector]
     public bool isDashing = false;          // Checks for the initial "lunge", NOT if it's still dashing
     [HideInInspector]
     public bool isMeleeAttacking = false;   // Checks if player is in middle of melee attack
