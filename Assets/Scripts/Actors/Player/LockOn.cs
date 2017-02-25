@@ -5,9 +5,9 @@ using System.Collections;
 public class LockOn : MonoBehaviour
 {
     public static LockOn current;
-    [SerializeField]
-    GameObject lockOnReticle;               // The reticle used for determining if there is a lock on
+    private GameObject lockOnReticle;               // The reticle used for determining if there is a lock on
     private Animator reticleAnimator;       // The animator for the reticle
+    private GameObject cameraTarget;
 
     private int enemyList;
     private Quaternion defaultRotation;
@@ -28,7 +28,9 @@ public class LockOn : MonoBehaviour
     {
         current = this;
 
+        lockOnReticle = GameObject.Find("LockOnReticle");
         reticleAnimator = lockOnReticle.GetComponent<Animator>();
+        cameraTarget = GameObject.Find("CameraTarget");
         defaultRotation = Quaternion.Euler(0, 0, 0);
     }
 
@@ -47,6 +49,7 @@ public class LockOn : MonoBehaviour
             ChangeRotation();
             CheckForDeath();
         }
+        AdjustCameraTarget();
     }
 
     // Checks for a doubletap
@@ -213,6 +216,25 @@ public class LockOn : MonoBehaviour
                 isDisabled = true;
                 nearestEnemy = null;
             }
+        }
+    }
+
+    void AdjustCameraTarget()
+    {
+        if (nearestEnemy != null)
+        {
+            float distanceX = (nearestEnemy.transform.position.x - transform.position.x);
+            float distanceY = (nearestEnemy.transform.position.y - transform.position.y);
+            float distance = Vector3.Distance(nearestEnemy.transform.position, transform.position);
+            float newPosX = transform.position.x + distanceX / 2;
+            float newPosY = transform.position.y + distanceY / 2;
+            cameraTarget.transform.position = new Vector3(newPosX, newPosY, 0);
+            Camera.main.orthographicSize = 5 + (distance / 3);
+        }
+        else
+        {
+            cameraTarget.transform.position = transform.position;
+            Camera.main.orthographicSize = 10;
         }
     }
 }
