@@ -244,8 +244,7 @@ public class WeaponsGabi : MonoBehaviour
         if (lockOn.nearestEnemy != null)
         {
             float distanceToPlayer;
-            distanceToPlayer = FindDistanceToObject.current.FindDistance(gameObject, lockOn.nearestEnemy);
-            Debug.Log("Distance" + distanceToPlayer);
+            distanceToPlayer = Vector3.Distance(transform.position, lockOn.nearestEnemy.transform.position);
             if (distanceToPlayer < 13.0f)
             {   // If player is in melee range
                 moveDelay = 0.4f;

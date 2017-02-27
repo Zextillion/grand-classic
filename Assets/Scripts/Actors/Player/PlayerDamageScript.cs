@@ -5,6 +5,8 @@ public class PlayerDamageScript : MonoBehaviour
 {
     [SerializeField]
     int damage = 1;
+    [SerializeField]
+    float timeSlow = 0.0f;
 	
 	void OnTriggerEnter2D(Collider2D hit)
     {
@@ -15,7 +17,7 @@ public class PlayerDamageScript : MonoBehaviour
                 hit.gameObject.GetComponent<Health>().SendMessage("ApplyDamage", damage, SendMessageOptions.DontRequireReceiver);
                 if (hit.tag == "Enemies")
                 {
-                    TimeSlow.current.TimeSlowdown(0.0008f);
+                    TimeSlow.current.TimeSlowdown(timeSlow);
                 }
             }
         }

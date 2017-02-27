@@ -32,39 +32,42 @@ public class Health : MonoBehaviour
 	// Update is called once per frame
 	void ApplyDamage (int damage)
     {
-        currentHealth -= damage;
-
-        // Health percent
-        healthPercent = (int)currentHealth / (int)maxHealth;
-
-        // If enemy is hit, random chance for explosion
-        if (Random.value < 0.04 && gameObject.tag == "Enemies")
-        {   // Instantiate circle explosion
-            GameObject.Instantiate(circleExplosionSmall, transform.position, transform.rotation);
-        }
-
-        if (invinicbilityTimer > 0.0f && damage != 0)
+        if (gameObject.layer != LayerMask.NameToLayer("BulletPhaser"))
         {
-            Invincible();
-        }
+            currentHealth -= damage;
 
-        // Death
-        if (currentHealth <= 0.0f)
-        {   
-            // If enemy is dead, random chance for big explosion
-            if (Random.value < 0.02 && gameObject.tag == "Enemies")
+            // Health percent
+            healthPercent = (int)currentHealth / (int)maxHealth;
+
+            // If enemy is hit, random chance for explosion
+            if (Random.value < 0.04 && gameObject.tag == "Enemies")
             {   // Instantiate circle explosion
-                GameObject.Instantiate(circleExplosionBig, transform.position, transform.rotation);
+                GameObject.Instantiate(circleExplosionSmall, transform.position, transform.rotation);
             }
-            // Special death script for the player
-            if (gameObject.tag != "Player")
+
+            if (invinicbilityTimer > 0.0f && damage != 0)
             {
-                GetComponent<RecycleActor>().Recycle();
+                Invincible();
             }
-            else
+
+            // Death
+            if (currentHealth <= 0.0f)
             {
-                DeathPlayer.current.GetComponent<DeathPlayer>().Death();
-                GetComponent<RecycleActor>().Recycle();
+                // If enemy is dead, random chance for big explosion
+                if (Random.value < 0.02 && gameObject.tag == "Enemies")
+                {   // Instantiate circle explosion
+                    GameObject.Instantiate(circleExplosionBig, transform.position, transform.rotation);
+                }
+                // Special death script for the player
+                if (gameObject.tag != "Player")
+                {
+                    GetComponent<RecycleActor>().Recycle();
+                }
+                else
+                {
+                    DeathPlayer.current.GetComponent<DeathPlayer>().Death();
+                    GetComponent<RecycleActor>().Recycle();
+                }
             }
         }
     }

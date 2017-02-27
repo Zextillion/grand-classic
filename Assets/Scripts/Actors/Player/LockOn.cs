@@ -15,13 +15,14 @@ public class LockOn : MonoBehaviour
     public bool facingRight = true;
     [HideInInspector]
     public GameObject nearestEnemy = null;
-    private GameObject previousEnemy = null;
 
     [HideInInspector]
     public bool shouldLockOn = true;       // If there is no lock on and a target enters the eligible range, lock on
 
     private bool disableLockOn = false;     // Countdown to disable lock on
     private bool isDisabled = false;        // Checks if lock on is disabled
+
+    private float initialAlpha = 0.0f;      // The initial transparency
 
     // Use this for initialization
     void Awake()
@@ -32,6 +33,8 @@ public class LockOn : MonoBehaviour
         reticleAnimator = lockOnReticle.GetComponent<Animator>();
         cameraTarget = GameObject.Find("CameraTarget");
         defaultRotation = Quaternion.Euler(0, 0, 0);
+
+        initialAlpha = lockOnReticle.GetComponent<SpriteRenderer>().color.a;
     }
 
     // Update is called once per frame
@@ -92,7 +95,7 @@ public class LockOn : MonoBehaviour
             float distance = (transform.position - obj.transform.position).sqrMagnitude;
             if (distance < nearestDistance)
             {
-                if (disableLockOn == true && lockOnReticle.GetComponent<SpriteRenderer>().color.a < 0.534f)
+                if (disableLockOn == true && lockOnReticle.GetComponent<SpriteRenderer>().color.a < initialAlpha)
                 {
                     reticleAnimator.SetBool("Intro", true);
                     Invoke("DisableIntroAnim", 0.3f);
@@ -103,7 +106,6 @@ public class LockOn : MonoBehaviour
             }
         }
         LockOnSound();
-        previousEnemy = nearestEnemy;
     }
 
     // Play lock on sound
@@ -112,12 +114,9 @@ public class LockOn : MonoBehaviour
         if (nearestEnemy != null && nearestEnemy.transform.parent == true)
         {
             // Plays audio
-            if (nearestEnemy != previousEnemy || lockOnReticle.GetComponent<SpriteRenderer>().color.a < 0.528f)
+            if (lockOnReticle.GetComponent<AudioSource>() != null)
             {
-                if (lockOnReticle.GetComponent<AudioSource>() != null)
-                {
-                    lockOnReticle.GetComponent<AudioSource>().Play();
-                }
+                lockOnReticle.GetComponent<AudioSource>().Play();
             }
         }
         else
@@ -221,7 +220,7 @@ public class LockOn : MonoBehaviour
 
     void AdjustCameraTarget()
     {
-        if (nearestEnemy != null)
+        if (nearestEnemy != null && isDisabled == false)
         {
             float distanceX = (nearestEnemy.transform.position.x - transform.position.x);
             float distanceY = (nearestEnemy.transform.position.y - transform.position.y);
@@ -229,7 +228,7 @@ public class LockOn : MonoBehaviour
             float newPosX = transform.position.x + distanceX / 2;
             float newPosY = transform.position.y + distanceY / 2;
             cameraTarget.transform.position = new Vector3(newPosX, newPosY, 0);
-            Camera.main.orthographicSize = 5 + (distance / 3);
+            Camera.main.orthographicSize = 6 + (distance / 1.8f);
         }
         else
         {

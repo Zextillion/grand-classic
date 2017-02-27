@@ -27,6 +27,9 @@ public class MeleeAttack : MonoBehaviour
     [SerializeField]
     float decreaseFactor = 1.0f;            // How much the shake should decrease
 
+    [SerializeField]
+    GameObject hitEffect;                   // The hit effect to display
+
     private BoxCollider2D col;              // Hitbox
     private Transform parent;               // Parent of what should be the hitbox and sprite of the melee weapon
     private SpriteRenderer sprite;          // Sprite of the melee weapon
@@ -97,6 +100,17 @@ public class MeleeAttack : MonoBehaviour
         if (hit.tag == "Enemies")
         {
             successfulHit = true;
+            GameObject obj = ObjectPooler.current.GetObjectForType(hitEffect.transform.name, true);
+            if (obj == null)
+            {
+                return;
+            }
+            else
+            {   // else fire a bullet from the position of the barrel
+                obj.transform.position = hit.transform.position;
+                obj.transform.rotation = transform.rotation;
+                obj.SetActive(true);
+            }
             CancelInvoke();
             Invoke("DisableHitbox", hitboxDuration);
             Invoke("DisableSprite", hitboxDuration);

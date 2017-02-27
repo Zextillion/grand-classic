@@ -19,8 +19,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4000010709295162}
-  - component: {fileID: 114000013311787136}
   - component: {fileID: 114941946407282846}
+  - component: {fileID: 114857470909569032}
+  - component: {fileID: 50567459415619102}
   m_Layer: 9
   m_Name: MissileRenne
   m_TagString: Untagged
@@ -123,6 +124,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!50 &50567459415619102
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012055397142}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!61 &61000013016335644
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -137,18 +158,6 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 3, y: 1}
---- !u!114 &114000013311787136
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012055397142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7919e84db608284786e19ff5db6d9a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 35
 --- !u!114 &114705896058455592
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -163,6 +172,20 @@ MonoBehaviour:
   damage: 0
   destroyEffect: {fileID: 1441973611151810, guid: f99f000a95d6828479f03917fa2f87c2,
     type: 2}
+--- !u!114 &114857470909569032
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012055397142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b2a70f93867e254eb8217793f183e6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 23
+  timeToSpeedUp: 0.2
+  speedIncrement: 2.4
 --- !u!114 &114941946407282846
 MonoBehaviour:
   m_ObjectHideFlags: 1

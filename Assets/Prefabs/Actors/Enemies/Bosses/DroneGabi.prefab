@@ -242,7 +242,7 @@ MonoBehaviour:
   bullet: {fileID: 1000012055397142, guid: 63ac91430af7be34bb6b30cc55350440, type: 2}
   startDelay: 1.4
   cooldown: 1.8
-  burstNumber: 12
+  burstNumber: 5
   timeBetweenShots: 0.03
   spreadAngle: 20
   oneShot: 0
@@ -269,7 +269,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9951711e0848f2a498f7a86bc74295a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 150
+  maxHealth: 100
+  movementTimer: 0
+  invinicbilityTimer: 0
 --- !u!114 &114061945999838356
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -315,7 +317,7 @@ MonoBehaviour:
   bullet: {fileID: 1000012055397142, guid: 63ac91430af7be34bb6b30cc55350440, type: 2}
   startDelay: 1.4
   cooldown: 1.8
-  burstNumber: 12
+  burstNumber: 5
   timeBetweenShots: 0.03
   spreadAngle: 20
   oneShot: 0

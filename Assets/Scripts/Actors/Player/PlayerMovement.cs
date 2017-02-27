@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     float lungeTime = 0.1f;                     // Initial dash timer
     private Vector2 lungeDirection;
 
+    [SerializeField]
+    GameObject dashTrail;
+
     [HideInInspector]
     public Rigidbody2D rb;
     
@@ -77,9 +80,25 @@ public class PlayerMovement : MonoBehaviour
         {
             lungeDirection = transform.right;
         }
-        hitbox.layer = LayerMask.NameToLayer("BulletPhaser");
+        if (hitbox.layer != LayerMask.NameToLayer("Invincible"))
+        {
+            hitbox.layer = LayerMask.NameToLayer("BulletPhaser");
+        }
         PlayerManager.current.isDashing = true;
         rb.velocity = lungeDirection * dashSpeed;
+
+        // Instantiate dash trail prefab
+        GameObject obj = ObjectPooler.current.GetObjectForType(dashTrail.name, true);
+        if (obj == null)
+        {
+            return;
+        }
+        else
+        {
+            obj.transform.position = transform.position;
+            obj.transform.rotation = Quaternion.LookRotation(lungeDirection, Vector2.right);
+            obj.SetActive(true);
+        }
         Lunge();
     }
 
@@ -101,11 +120,14 @@ public class PlayerMovement : MonoBehaviour
         CancelInvoke();
         PlayerManager.current.isDashing = false;
 
-        Invoke("AllowHit", 0.2f);
+        Invoke("AllowHit", 0.4f);
     }
 
     void AllowHit()
     {
-        hitbox.layer = LayerMask.NameToLayer("Player");
+        if (hitbox.layer != LayerMask.NameToLayer("Invincible"))
+        {
+            hitbox.layer = LayerMask.NameToLayer("Player");
+        }
     }
 }

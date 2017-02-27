@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 49a3517b2d3ded14f86a386dac2fe08b
-timeCreated: 1484274325
+timeCreated: 1488090560
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -8,6 +8,7 @@ TextureImporter:
     21300002: PlayerBullet
     21300004: BulletGreenCircle
     21300006: RedMissile
+    21300008: WhiteCircle
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -120,6 +121,19 @@ TextureImporter:
         y: 593
         width: 15
         height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: WhiteCircle
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 639
+        width: 21
+        height: 22
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
