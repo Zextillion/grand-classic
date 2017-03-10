@@ -80,6 +80,11 @@ public class Health : MonoBehaviour
 
     void Invincible()
     {
+        if (transform.parent.FindChild("Sprite").gameObject.GetComponent<Animator>() != null)
+        {
+            transform.parent.FindChild("Sprite").gameObject.GetComponent<Animator>().SetTrigger("hurt");
+        }
+
         gameObject.layer = LayerMask.NameToLayer("Invincible");
         PlayerManager.current.canAct = false;
         PlayerManager.current.canMove = false;
@@ -89,6 +94,11 @@ public class Health : MonoBehaviour
 
     void AllowMovement()
     {
+        if (transform.parent.FindChild("Sprite").GetComponent<Animator>() != null)
+        {
+            transform.parent.FindChild("Sprite").GetComponent<Animator>().SetTrigger("hurtRecover");
+        }
+
         PlayerManager.current.canAct = true;
         PlayerManager.current.canMove = true;
     }

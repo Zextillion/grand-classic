@@ -32,7 +32,7 @@ public class MeleeAttack : MonoBehaviour
 
     private BoxCollider2D col;              // Hitbox
     private Transform parent;               // Parent of what should be the hitbox and sprite of the melee weapon
-    private SpriteRenderer sprite;          // Sprite of the melee weapon
+    private SpriteRenderer spriteWeapon;    // Sprite of the melee weapon
 
     [SerializeField]
     string fireButton;
@@ -41,7 +41,7 @@ public class MeleeAttack : MonoBehaviour
     {
         col = GetComponent<BoxCollider2D>();
         parent = gameObject.transform.parent;
-        sprite = parent.GetComponentInChildren<SpriteRenderer>();
+        spriteWeapon = parent.GetComponentInChildren<SpriteRenderer>();
 
         lungeCounter = lungeTimer + 1;
     }
@@ -67,11 +67,13 @@ public class MeleeAttack : MonoBehaviour
         PlayerManager.current.canAct = false;
     }
 
-    // Enables the hitbox and sprite
+    // Enables the hitbox and spriteWeapon
     void Attack()
     {
         col.enabled = true;     // Enables hitbox
-        sprite.enabled = true;  // Enables sprite
+        spriteWeapon.enabled = true;  // Enables sprite
+
+        parent.parent.FindChild("Sprite").GetComponent<Animator>().SetTrigger("meleeAttacking");
 
         LockOn.current.ChangeRotation();
 
@@ -125,7 +127,7 @@ public class MeleeAttack : MonoBehaviour
 
     void DisableSprite()
     {
-        sprite.enabled = false;
+        spriteWeapon.enabled = false;
     }
 
     void CanAct()
